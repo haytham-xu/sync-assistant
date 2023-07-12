@@ -24,6 +24,7 @@ class CloudFileModel:
     __path = None
     __server_ctime = None
     __server_filename = None
+    __server_mtime = None
     __encrypt = None
     __size = None
 
@@ -49,6 +50,8 @@ class CloudFileModel:
         return self.__encrypt
     def get_size(self):
         return self.__size
+    def get_server_mtime(self):
+        return self.__server_mtime
 
     def set_category(self, category):
         self.__category = category
@@ -72,6 +75,8 @@ class CloudFileModel:
         self.__encrypt = encrypt
     def set_size(self, size):
         self.__size = size
+    def set_server_mtime(self, server_mtime):
+        self.__server_mtime = server_mtime
     
 
 
@@ -85,6 +90,7 @@ class CloudFileModel:
     		"path": self.__path,
     		"server_ctime": self.__server_ctime,
     		"server_filename": self.__server_filename,
+            "server_mtime": self.__server_mtime,
     		"encrypt": self.__encrypt,
     		"size": self.__size,
             "is_dir": self.__is_dir,

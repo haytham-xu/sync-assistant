@@ -63,47 +63,33 @@ def list_folder_file_same_level(target_path):
         current_index += limitation
     return folder_list, file_list
 
-'''
-[
-    {
-        '': 6, 
-        '': 704xxxx0635, 
-        '': 0, 
-        'local_ctime': 16xx311, 
-        'local_mtime': 16xx3400, 
-        'md5': '15aeacxxxxx01f8b', 
-        'path': '/apxxxxx_file.md', 
-        'server_ctime': 168xx39, 
-        'server_filename': 'same_file.md', 
-        'server_mtime': 16xx539, 
-        'size': 7
-    }
-    ...
-]
-'''
+
 def list_folder_file_recursion(target_path):
     limitation = 1000
     current_index = 0
-    res = set()
+    file_folder_list = set()
     while True:
         res = baiduwangpan.get_multimedia_listall(target_path, current_index, limitation)
         current_file_folder_list = res['list']
-        print(current_file_folder_list)
         for file_folder in current_file_folder_list:
             cloud_file_folder_model = cloud_file_model.CloudFileModel()
             cloud_file_folder_model.set_category(file_folder['category'])
             cloud_file_folder_model.set_fs_id(file_folder['fs_id'])
             cloud_file_folder_model.set_is_dir(file_folder['isdir'])
-            res.add({
-                'fs_id': 704xxxx0635, 
-                'isdir': 0, 
-                'path': '/apxxxxx_file.md', 
-            })
+            cloud_file_folder_model.set_local_ctime(file_folder['local_ctime'])
+            cloud_file_folder_model.set_local_mtime(file_folder['local_mtime'])
+            cloud_file_folder_model.set_md5(file_folder['md5'])
+            cloud_file_folder_model.set_path(file_folder['path'])
+            cloud_file_folder_model.set_server_ctime(file_folder['server_ctime'])
+            cloud_file_folder_model.set_server_filename(file_folder['server_filename'])
+            cloud_file_folder_model.set_server_mtime(file_folder['server_mtime'])
+            cloud_file_folder_model.set_size(file_folder['size'])
+            file_folder_list.add(cloud_file_folder_model)
         current_file_folder_list_length = len(current_file_folder_list)
         if current_file_folder_list_length == 0 or current_file_folder_list_length < limitation:
             break
         current_index += limitation
-    return folder_list, file_list
+    return file_folder_list
 
 def get_mtime(path):
     return baiduwangpan.search_file(path.split('/')[-1], '/'.join(path.split('/')[:-1]))['list'][0]['local_mtime']

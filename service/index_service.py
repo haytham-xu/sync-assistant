@@ -5,7 +5,8 @@ from support import baiduwangpan
 from service import cloud_file_service
 
 def get_cloud_base_index(path:str, inlcude_folder: bool = False):
-    pass
+    file_folder_set = cloud_file_service.list_folder_file_recursion(path)
+    # todo
 
 def get_local_index_base(base_path:str, inlcude_folder: bool = False):
     ff_list = []
