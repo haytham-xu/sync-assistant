@@ -1,6 +1,7 @@
 
 from support.encrypter import encrypter
 from support import filefolder
+from model.cloud_file_model import CloudFileModel
 
 class FileModel:
     __code = None
@@ -95,7 +96,7 @@ class FileModel:
             "is_dir": self.__is_dir,
         }
 
-def create_quick_index(base_path:str, file_path:str):
+def create_local_quick_index(base_path:str, file_path:str):
     if base_path[-1] != '/':
         base_path += '/'
     file_name = file_path.split('/')[-1]
@@ -112,4 +113,20 @@ def create_quick_index(base_path:str, file_path:str):
     new_file_model.set_middle_path(middle_path)
     new_file_model.set_local_mtime(local_mtime)
     new_file_model.set_is_dir(is_dir)
+    return new_file_model
+
+def create_cloud_quick_index(base_path:str, cloud_file_model:CloudFileModel):
+    if base_path[-1] != '/':
+        base_path += '/'
+    middle_path = cloud_file_model.get_path().removeprefix(base_path)
+    file_code = encrypter.string_hash(middle_path)
+
+    new_file_model = FileModel()
+    new_file_model.set_code(file_code)
+    new_file_model.set_middle_path(middle_path)
+    new_file_model.set_fs_id(cloud_file_model.get_fs_id())
+    new_file_model.set_is_dir(cloud_file_model.get_is_dir()==1)
+    new_file_model.set_cloud_base_path(base_path)
+    new_file_model.set_file_name(cloud_file_model.get_server_filename())
+
     return new_file_model
