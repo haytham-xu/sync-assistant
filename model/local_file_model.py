@@ -78,23 +78,42 @@ class FileModel:
     def set_is_dir(self, is_dir):
         self.__is_dir = is_dir
 
+    # code fs_id file_name middle_path local_base_path cloud_base_path source_md5 encrypt_md5 encrypt delete delete_time local_mtime db_mtime is_dir
     def to_json(self):
         return {
-            "code": self.__code,
-            "fs_id": self.__fs_id,
-    		"file_name": self.__file_name,
-    		"middle_path": self.__middle_path,
-    		"local_base_path": self.__local_base_path,
-    		"cloud_base_path": self.__cloud_base_path,
-    		"source_md5": self.__source_md5,
-    		"encrypt_md5": self.__encrypt_md5,
-    		"encrypt": self.__encrypt,
-    		"delete": self.__delete,
-    		"delete_time": self.__delete_time,
-    		"local_mtime": self.__local_mtime,
-    		"db_mtime": self.__db_mtime,
-            "is_dir": self.__is_dir,
+            'code': self.__code,
+            'fs_id': self.__fs_id,
+    		'file_name': self.__file_name,
+    		'middle_path': self.__middle_path,
+    		'local_base_path': self.__local_base_path,
+    		'cloud_base_path': self.__cloud_base_path,
+    		'source_md5': self.__source_md5,
+    		'encrypt_md5': self.__encrypt_md5,
+    		'encrypt': self.__encrypt,
+    		'delete': self.__delete,
+    		'delete_time': self.__delete_time,
+    		'local_mtime': self.__local_mtime,
+    		'db_mtime': self.__db_mtime,
+            'is_dir': self.__is_dir,
         }
+
+def create_file_model(file_json):
+    new_file_model = FileModel()
+    new_file_model.set_code(file_json['code'])
+    new_file_model.set_fs_id(file_json['fs_id'])
+    new_file_model.set_file_name(file_json['file_name'])
+    new_file_model.set_middle_path(file_json['middle_path'])
+    new_file_model.set_local_base_path(file_json['local_base_path'])
+    new_file_model.set_cloud_base_path(file_json['cloud_base_path'])
+    new_file_model.set_source_md5(file_json['source_md5'])
+    new_file_model.set_encrypt_md5(file_json['encrypt_md5'])
+    new_file_model.set_encrypt(file_json['encrypt'])
+    new_file_model.set_delete(file_json['delete'])
+    new_file_model.set_delete_time(file_json['delete_time'])
+    new_file_model.set_local_mtime(file_json['local_mtime'])
+    new_file_model.set_db_mtime(file_json['db_mtime'])
+    new_file_model.set_is_dir(file_json['is_dir'])
+    return new_file_model
 
 def create_local_quick_index(base_path:str, file_path:str):
     if base_path[-1] != '/':
@@ -115,6 +134,10 @@ def create_local_quick_index(base_path:str, file_path:str):
     new_file_model.set_is_dir(is_dir)
     return new_file_model
 
+def update_from_quick_index(model_in_db: FileModel, model_in_index: FileModel):
+    model_in_db.set_local_mtime(model_in_index.get_local_mtime())
+    return model_in_db
+
 def create_cloud_quick_index(base_path:str, cloud_file_model:CloudFileModel):
     if base_path[-1] != '/':
         base_path += '/'
@@ -130,3 +153,5 @@ def create_cloud_quick_index(base_path:str, cloud_file_model:CloudFileModel):
     new_file_model.set_file_name(cloud_file_model.get_server_filename())
 
     return new_file_model
+
+
