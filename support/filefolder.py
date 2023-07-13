@@ -25,7 +25,7 @@ class ReadMode(enum.Enum):
     STRING = "read()"
     STRING_LIST = "readlines()"    
 
-def read_file(file_path, mode='r', read_mode=ReadMode.STRING_LIST):
+def read_file(file_path, mode='r', read_mode=ReadMode.STRING):
     try:
         res = None
         with open(file_path, mode) as f:
