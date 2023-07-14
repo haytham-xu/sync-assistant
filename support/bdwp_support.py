@@ -1,9 +1,6 @@
 
 import requests, json, os, time, hashlib
-from support.config import config
-# from support import filefolder
-# from support.encrypter import encrypter
-# from requests import HTTPA
+from support import config_support, file_support
 
 oauth_url = "https://openapi.baidu.com/oauth/2.0/token"
 base_url = "https://pan.baidu.com"
@@ -11,6 +8,10 @@ http_base_url = "http://pan.baidu.com"
 headers = {
   'User-Agent': 'pan.baidu.com'
 }
+access_token = config_support.config.get_access_token()
+refresh_token = config_support.config.get_refresh_token()
+app_key = config_support.config.get_app_key()
+secret_key = config_support.config.get_secret_key()
 
 def http_request(url, method, headers, params={}, payload={}, files={}):
     res = requests.request(method, url, params=params, headers=headers, data = payload, files = files, timeout=360)
@@ -20,14 +21,14 @@ def http_request(url, method, headers, params={}, payload={}, files={}):
     raise Exception("Request failed, eror message: ", res.text)
 
 def bdwp_request_with_token(url, method, headers={}, params={}, payload={} ,files=[]):
-    params["access_token"] = config.get_access_token()
+    params["access_token"] = access_token
     res = http_request(url, method, headers, params, payload ,files)
     json_result = res.json()
     res.close()
     return json_result
 
 def refresh_token():
-    params = {"grant_type": "refresh_token", "refresh_token":config.get_refresh_token(), "client_id":config.get_app_key(), "client_secret":config.get_secret_key()}
+    params = {"grant_type": "refresh_token", "refresh_token":refresh_token, "client_id":app_key, "client_secret":secret_key}
     res = http_request(oauth_url, "GET", headers, params)
     print(res.text)
     json_result = res.json()
@@ -148,7 +149,52 @@ def get_file_meta(file_fsid):
     return bdwp_request_with_token(url, "GET", headers, params)
 
 def download_file(dlink, local_output_absolute_path):
-    dlink += "&access_token=" + config.get_access_token()
+    dlink += "&access_token=" + access_token
     res = http_request(dlink, "GET", headers)
-    filefolder.write_file(local_output_absolute_path, res.content, 'wb+')
+    file_support.write_file(local_output_absolute_path, res.content, 'wb+')
     res.close()
+
+def is_file_exist_in_cloud(cloud_file_path:str):
+    search_key = cloud_file_path.split('/')[-1]
+    search_in = "/".join(cloud_file_path.split('/')[:-1])
+    res = search_file(search_key, search_in)
+    return len(res['list']) != 0
+
+def list_folder_file_same_level(target_path):
+    limitation = 1000
+    current_index = 0
+    folder_list = set()
+    file_list = set()
+    while True:
+        res = get_current_level_file_list(target_path, 0, current_index, limitation)
+        current_file_folder_list = res['list']
+        for file_folder in current_file_folder_list:
+            if file_folder["isdir"]:
+                folder_list.add(file_folder)
+            else:
+                file_list.add(file_folder)
+        current_file_folder_list_length = len(current_file_folder_list)
+        if current_file_folder_list_length == 0 or current_file_folder_list_length < limitation:
+            break
+        current_index += limitation
+    return folder_list, file_list
+
+
+def list_folder_file_recursion(target_path):
+    limitation = 1000
+    current_index = 0
+    folder_list = set()
+    file_list = set()
+    while True:
+        res = get_multimedia_listall(target_path, current_index, limitation)
+        current_file_folder_list = res['list']
+        for file_folder in current_file_folder_list:
+            if file_folder["isdir"]:
+                folder_list.add(file_folder)
+            else:
+                file_list.add(file_folder)
+        current_file_folder_list_length = len(current_file_folder_list)
+        if current_file_folder_list_length == 0 or current_file_folder_list_length < limitation:
+            break
+        current_index += limitation
+    return folder_list, file_list

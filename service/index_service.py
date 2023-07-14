@@ -1,29 +1,22 @@
 
 import os
-from model import local_file_model
-from service import cloud_file_service
+from model import file_model
+from support import path_support, encrypter_support
 
-def get_cloud_base_index(path:str, inlcude_folder: bool = False):
-    file_folder_set = cloud_file_service.list_folder_file_recursion(path)
-    ff_list = []
-    for f in file_folder_set:
-        if not inlcude_folder and f.get_is_dir():
-            continue
-        ff_list.append(local_file_model.create_cloud_quick_index(path, f))
+def get_latest_index(base_path:str, encrypt: bool):
+    file_list = []
+    for cur_path, _, files in os.walk(base_path):
+        for file_name in files:
+            file_path = cur_path + '/' + file_name
+            middle_path = file_path.removeprefix(base_path)
+            file_list.append({
+                file_model.FILE_CODE_KEY: encrypter_support.string_hash(middle_path),
+                file_model.FILE_NAME_KEY: file_name,
+                file_model.MIDDLE_PATH_KEY: middle_path,
+                file_model.LOCAL_MTIME_KEY: path_support.get_mtime(file_path),
+                file_model.ENCRYPT_KEY: encrypt
+            })
     result = {}
-    for f in ff_list:
-        result[f.get_code()] = f.to_json()
-    return result
-
-def get_latest_local_index(base_path:str, inlcude_folder: bool = False):
-    ff_list = []
-    for cur_path, folders, files in os.walk(base_path):
-        if inlcude_folder:
-            for f in folders:
-                ff_list.append(local_file_model.create_local_quick_index(base_path, cur_path + '/' + f))
-        for f in files:
-            ff_list.append(local_file_model.create_local_quick_index(base_path, cur_path + '/' + f))
-    result = {}
-    for f in ff_list:
-        result[f.get_code()] = f.to_json()
+    for a_file in file_list:
+        result[a_file[file_model.FILE_CODE_KEY]] = a_file
     return result

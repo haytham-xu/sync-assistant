@@ -1,18 +1,10 @@
 
-from support.config import config
+from model import context_model
+from support.config_support import config
 import os,shutil
 
-def create_buffer_folder(local_base_path:str):
-    if not os.path.exists(config.get_swap_folder_path()):
-        os.mkdir(config.get_swap_folder_path())
-    folder_name = local_base_path.split('/')[-1]
-    swap_path = config.get_swap_folder_path() + folder_name
-    if not os.path.exists(swap_path):
-        os.mkdir(swap_path)
+def create_buffer_folder(folder_context: context_model.FolderContext):
+    os.mkdir(folder_context.get_swap_base_path())
     
-def remove_buffer_folder(local_base_path:str):
-    folder_name = local_base_path.split('/')[-1]
-    swap_path = config.get_swap_folder_path() + folder_name
-    shutil.rmtree(swap_path)
-
-    
+def remove_buffer_folder(folder_context: context_model.FolderContext):
+    shutil.rmtree(folder_context.get_swap_base_path())
