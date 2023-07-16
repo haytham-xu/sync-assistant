@@ -42,9 +42,9 @@ class DBContext:
         self.__folder_context = FolderContext(local_base_path, cloud_base_path, swap_base_path)
         folder_name = local_base_path.split('/')[-1]
         self.__db_name = '.' + folder_name + '.json'
-        self.__local_db_path = self.__folder_context.get_local_base_path() + self.__db_name
-        self.__cloud_db_path = self.__folder_context.get_cloud_base_path() + self.__db_name
-        self.__swap_db_path = self.__folder_context.get_swap_base_path() + self.__db_name
+        self.__local_db_path = path_support.merge_path([self.__folder_context.get_local_base_path(), self.__db_name])
+        self.__cloud_db_path = path_support.merge_path([self.__folder_context.get_cloud_base_path(), self.__db_name])
+        self.__swap_db_path = path_support.merge_path([self.__folder_context.get_swap_base_path(), self.__db_name])
     def get_db_name(self):
         return self.__db_name
     def get_local_db_path(self):

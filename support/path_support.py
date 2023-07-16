@@ -1,10 +1,11 @@
 
-import os, shutil, enum
+from support import file_support
+import os, shutil
 
 def create_file(file_path, file_content):
     parent_path = '/'.join(file_path.split('/')[:-1])
     create_folder(parent_path)
-    write_file(file_path, file_content)
+    file_support.write_file(file_path, file_content)
 
 def create_folder(folder_path):
     if not is_exist(folder_path):
@@ -57,3 +58,16 @@ def format_folder_path(path:str):
     if path[-1] != '/':
         path += '/'
     return path
+
+def merge_path(path_list:list):
+    output_path = ''
+    for p in path_list:
+        if p[0] in ['/', '.'] and p[-1] == '/':
+            output_path += p[:-1]
+        elif p[0] not in ['/', '.'] and p[-1] == '/':
+            output_path = output_path + '/' + p[:-1]
+        elif p[0] in ['/', '.'] and p[-1] != '/':
+            output_path += p
+        else:
+            output_path = output_path + '/' + p
+    return output_path

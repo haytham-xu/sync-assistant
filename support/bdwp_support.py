@@ -151,8 +151,15 @@ def get_file_meta(file_fsid):
 def download_file(dlink, local_output_absolute_path):
     dlink += "&access_token=" + access_token
     res = http_request(dlink, "GET", headers)
-    file_support.write_file(local_output_absolute_path, res.content, 'wb+')
+    file_support.write_file_byte(local_output_absolute_path, res.content)
     res.close()
+
+def download_file_with_path(local_base_path:str, cloud_base_path:str, middle_path:str):
+    res = search_file(middle_path, cloud_base_path)
+    fs_id = res['list'][0]['fs_id']
+    res = get_file_meta(fs_id)
+    dlink = res['list'][0]['dlink']
+    download_file(dlink, local_base_path + middle_path)
 
 def is_file_exist_in_cloud(cloud_file_path:str):
     search_key = cloud_file_path.split('/')[-1]

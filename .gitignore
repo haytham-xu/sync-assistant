@@ -2,9 +2,11 @@
 /logs
 config-local.yaml
 __pycache__/
-venv/
+venv
 uttest/testdata/
 local/
 test.py
+.vscode
 
 /uttest
+config-test.yaml

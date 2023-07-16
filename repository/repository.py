@@ -1,7 +1,7 @@
 
-import json
 from model import file_model, context_model
-from support import file_support
+from support import file_support, path_support
+import json
 
 class FileDB:
     __folder_context: context_model.FolderContext
@@ -11,9 +11,12 @@ class FileDB:
     def __init__(self, folder_context:context_model.FolderContext, db_context:context_model.DBContext, db_content_file_path:str):
         self.__folder_context = folder_context
         self.__db_context = db_context
+        if not path_support.is_exist(db_content_file_path):
+            path_support.create_file(db_content_file_path, json.dumps({}))
         file_dict_json:dict = json.loads(file_support.read_file_as_string(db_content_file_path))
-        for key, value in file_dict_json.items:
-            local_file_path = self.__folder_context.get_local_base_path + value[file_model.MIDDLE_PATH_KEY]
+        self.__file_dict = {}
+        for key, value in file_dict_json.items():
+            local_file_path = path_support.merge_path([self.__folder_context.get_local_base_path(), value[file_model.MIDDLE_PATH_KEY]])
             self.__file_dict[key] = file_model.FileModel(self.__folder_context, local_file_path, value[file_model.FS_ID_KEY], value[file_model.ENCRYPT_KEY])
 
     def get_folder_context(self):
@@ -31,7 +34,7 @@ class FileDB:
 
     def file_dict_to_json(self):
         res = {}
-        for key in self.__file_dict.keys:
+        for key in self.__file_dict.keys():
             value: file_model.FileModel = self.__file_dict[key]
             res[key] = value.to_json()
         return res
@@ -68,7 +71,7 @@ class FileDB:
         for file_code in self.__file_dict.keys():
             a_file_model:file_model.FileModel = self.__file_dict[file_code]
             file_dict_json[file_code] = a_file_model.to_json()
-        file_support.write_file(self.__db_context.get_local_db_path(), json.dumps(file_dict_json))
+        file_support.write_file(self.__db_context.get_local_db_path(), json.dumps(file_dict_json, indent=4, ensure_ascii=False))
 
     def remove_file_model(self, key:str):
         del self.__file_dict[key]

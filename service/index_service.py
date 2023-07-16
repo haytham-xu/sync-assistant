@@ -7,6 +7,8 @@ def get_latest_index(base_path:str, encrypt: bool):
     file_list = []
     for cur_path, _, files in os.walk(base_path):
         for file_name in files:
+            if file_name[0] == '.':
+                continue
             file_path = cur_path + '/' + file_name
             middle_path = file_path.removeprefix(base_path)
             file_list.append({

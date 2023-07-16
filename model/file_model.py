@@ -75,6 +75,6 @@ class FileModel:
         }
 
     def get_file_local_path(self):
-        return self.__folder_context.get_local_base_path() + self.__middle_path
+        return path_support.merge_path([self.__folder_context.get_local_base_path(), self.__middle_path])
     def get_file_cloud_path(self):
-        return self.__folder_context.get_cloud_base_path() + self.__middle_path
+        return path_support.merge_path([self.__folder_context.get_cloud_base_path(), self.__middle_path])
