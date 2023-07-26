@@ -18,8 +18,10 @@ def sync(local_base_path, cloud_base_path, swap_base_path, encrypt, mode):
 def sync_pull(folder_context:context_model.FolderContext, db_context:context_model.DBContext, encrypt:bool):
     buffer_service.download_cloud_db(folder_context, db_context)
     latest_index:dict = index_service.get_latest_index(folder_context.get_local_base_path(), encrypt)
-    local_db = repository.FileDB(folder_context, db_context, db_context.get_local_db_path())
-    swap_db = repository.FileDB(folder_context, db_context, db_context.get_swap_db_path())
+    local_db = repository.FileDB(folder_context, db_context)
+    local_db.load_from_db_file(db_context.get_local_db_path())
+    swap_db = repository.FileDB(folder_context, db_context)
+    swap_db.load_from_db_file(db_context.get_swap_db_path())
     local_db.update_from_latest_index(latest_index)
 
     need_create_files:dict = swap_db.get_file_dict_difference(local_db.get_file_dict())
@@ -36,8 +38,10 @@ def sync_pull(folder_context:context_model.FolderContext, db_context:context_mod
 def sync_push(folder_context:context_model.FolderContext, db_context:context_model.DBContext, encrypt:bool):
     buffer_service.download_cloud_db(folder_context, db_context)
     latest_index:dict = index_service.get_latest_index(folder_context.get_local_base_path(), encrypt)
-    local_db = repository.FileDB(folder_context, db_context, db_context.get_local_db_path())
-    swap_db = repository.FileDB(folder_context, db_context, db_context.get_swap_db_path())
+    local_db = repository.FileDB(folder_context, db_context)
+    local_db.load_from_db_file(db_context.get_local_db_path())
+    swap_db = repository.FileDB(folder_context, db_context)
+    swap_db.load_from_db_file(db_context.get_swap_db_path())
 
     local_db.update_from_latest_index(latest_index)
     need_create_files:dict = local_db.get_file_dict_difference(swap_db.get_file_dict())
