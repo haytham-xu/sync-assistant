@@ -72,7 +72,7 @@ class FileDB:
         return json.dumps(self.file_dict_to_json(), indent=4, ensure_ascii=False)
 
     def persistence(self):
-        file_support.write_file(self.__db_context.get_local_db_path(), self.to_formatted_json_string)
+        file_support.write_file(self.__db_context.get_local_db_path(), self.to_formatted_json_string())
 
     # CRUD for FileModel
     def remove_file_model(self, key:str):

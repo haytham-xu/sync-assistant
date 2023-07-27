@@ -1,5 +1,4 @@
 
-# profile: local
-profile: test
+profile: local
 swap_folder_path: ./local/cloud/
 time_gap: 300 # second

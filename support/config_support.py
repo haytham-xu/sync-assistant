@@ -62,5 +62,19 @@ class Config():
         return "time_gap"
     def get_key_mode(self):
         return "mode"
+    def get_key_swap_folder_path(self):
+        return "swap_folder_path"
+    def get_key_local_root_path(self):
+        return "local_root_path"
+    def get_key_sync_folder(self):
+        return "sync_folder"
+    def get_all_configs(self):
+        return self.all_configs
+    def set_swap_folder_path(self, swap_folder_path:str):
+        self.all_configs[self.get_key_swap_folder_path()] = swap_folder_path
+    def set_local_root_path(self, local_root_path:str):
+        self.all_configs[self.get_key_local_root_path()] = local_root_path
+    def set_sync_folder(self, sync_folder:list):
+        self.all_configs[self.get_key_sync_folder()] = sync_folder
 
 config = Config()
