@@ -4,35 +4,49 @@ from model import context_model
 from repository import repository
 from support.config_support import config
 
-TEST_LOCAL_ROOT_PATH = "./uttest/tmp/"
-TEST_CLOUD_ROOT_PATH = config.get_cloud_root_path()
-TEST_FOLDER_NAME = "test_folder"
-TEST_SWAP_FOLDER_NAME = "swap"
-TEST_DB_FILE_NAME = "." + TEST_FOLDER_NAME + ".json"
+# base
+BASE_PATH_LOCAL_ROOT = "./uttest/tmp/"
+BASE_PATH_CLOUD_ROOT = config.get_cloud_root_path()
+BASE_NAME_TEST_FOLDER = "test_folder"
+BASE_NAME_DB = "." + BASE_NAME_TEST_FOLDER + ".json"
 
-TEST_LOCAL_BASE_PATH = merge_path([TEST_LOCAL_ROOT_PATH, TEST_FOLDER_NAME])
-TEST_CLOUD_BASE_PATH = merge_path([TEST_CLOUD_ROOT_PATH, TEST_FOLDER_NAME])
-TEST_SWAP_BASE_PATH = merge_path([TEST_LOCAL_ROOT_PATH, TEST_SWAP_FOLDER_NAME])
+# swap
+SWAP_NAME_FOLDER = "swap"
+SWAP_PATH_ROOT = merge_path([BASE_PATH_LOCAL_ROOT, SWAP_NAME_FOLDER])         # ./uttest/tmp/swap/
 
-TEST_LOCAL_DB_PATH = TEST_LOCAL_BASE_PATH + "/" + TEST_DB_FILE_NAME
-TEST_CLOUD_DB_PATH = TEST_CLOUD_BASE_PATH + "/" + TEST_DB_FILE_NAME
-TEST_SWAP_DB_PATH = TEST_SWAP_BASE_PATH + "/" + TEST_DB_FILE_NAME
+# cloud
+CLOUD_PATH_ROOT = merge_path([BASE_PATH_CLOUD_ROOT, BASE_NAME_TEST_FOLDER])             # /apps/sync-assistant/test_folder
+CLOUD_PATH_DB = merge_path([CLOUD_PATH_ROOT, BASE_NAME_DB])
 
-SAME_FOLDER_NAME = "same_folder"
-SAME_FILE_NAME = "same.md"
-TO_DELETE_FILE_NAME = "to_delete.md"
-TO_CREATE_FILE_NAME = "to_create.md"
-TO_UPDATE_FILE_NAME = "to_update.md"
+# local folder
+LOCAL_PATH_ROOT = merge_path([BASE_PATH_LOCAL_ROOT, BASE_NAME_TEST_FOLDER])             # ./uttest/tmp/test_folder
+LOCAL_PATH_DB = merge_path([LOCAL_PATH_ROOT, BASE_NAME_DB])
+LOCAL_FOLDER_CONTEXT = context_model.FolderContext(LOCAL_PATH_ROOT, CLOUD_PATH_ROOT, SWAP_PATH_ROOT)
+LOCAL_DB_CONTEXT = context_model.DBContext(LOCAL_PATH_ROOT, CLOUD_PATH_ROOT, SWAP_PATH_ROOT)
+LOCAL_DB = repository.FileDB(LOCAL_FOLDER_CONTEXT, LOCAL_DB_CONTEXT, LOCAL_DB_CONTEXT.get_local_db_path())
 
-FILE_DEFAULT_CONTENT = "abc"
-FILE_UPDATE_CONTENT = "abcdef"
+# mock cloud
+MOCK_CLOUD_NAME_FOLDER = "mock_cloud"
+MOCK_CLOUD_NAME_DB = "." + MOCK_CLOUD_NAME_FOLDER + ".json"
+MOCK_CLOUD_PATH_ROOT = merge_path([BASE_PATH_LOCAL_ROOT, MOCK_CLOUD_NAME_FOLDER])  # ./uttest/tmp/mock_cloud/
+MOCK_CLOUD_PATH_DB = merge_path([MOCK_CLOUD_PATH_ROOT, MOCK_CLOUD_NAME_DB])
+MOCK_CLOUD_FOLDER_CONTEXT = context_model.FolderContext(MOCK_CLOUD_PATH_ROOT, CLOUD_PATH_ROOT, SWAP_PATH_ROOT)
+MOCK_CLOUD_DB_CONTEXT = context_model.DBContext(MOCK_CLOUD_PATH_ROOT, CLOUD_PATH_ROOT, SWAP_PATH_ROOT)
+MOCK_CLOUD_DB = repository.FileDB(MOCK_CLOUD_FOLDER_CONTEXT, MOCK_CLOUD_DB_CONTEXT, MOCK_CLOUD_DB_CONTEXT.get_local_db_path())
 
-OLD_TIEMSTAMPLE = 1600000000
-NEW_TIMESTAMPLE = 1700000000
+# test file config
+TD_MIDDLE_SAME = "same.md"
+TD_MIDDLE_DELETE = "to_delete.md"
+TD_MIDDLE_CREATE = "to_create.md"
+TD_MIDDLE_UPDATE = "to_update.md"
+TD_MIDDLE_SAME_2 = "same_folder/same.md" 
 
-TEST_FOLDER_CONTEXT = context_model.FolderContext(TEST_LOCAL_BASE_PATH, TEST_CLOUD_BASE_PATH, TEST_SWAP_BASE_PATH)
-TEST_DB_CONTEXT = context_model.DBContext(TEST_LOCAL_BASE_PATH, TEST_CLOUD_BASE_PATH, TEST_SWAP_BASE_PATH)
-TEST_LOCAL_DB = repository.FileDB(TEST_FOLDER_CONTEXT, TEST_DB_CONTEXT)
+# test data
+TD_CONTENT_DEFAULT = "abc"
+TD_CONTENT_UPDATE = "abcdef"
+TD_OLDTIEM = 1600000000
+TD_NEWTIME = 1700000000
 
-TEST_MODE_MASTER = "master"
-TEST_MODE_SUBORDINATE = "subordinate"
+# sync mode
+TD_MODE_MASTER = "master"
+TD_MODE_SUBORDINATE = "subordinate"

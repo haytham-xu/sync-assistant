@@ -60,14 +60,21 @@ def format_folder_path(path:str):
     return path
 
 def merge_path(path_list:list):
-    output_path = ''
+    output_path = ""
     for p in path_list:
-        if p[0] in ['/', '.'] and p[-1] == '/':
-            output_path += p[:-1]
-        elif p[0] not in ['/', '.'] and p[-1] == '/':
-            output_path = output_path + '/' + p[:-1]
-        elif p[0] in ['/', '.'] and p[-1] != '/':
-            output_path += p
-        else:
-            output_path = output_path + '/' + p
+        output_path = os.path.join(output_path, p)    
     return output_path
+
+
+'''
+|       | a     | /a    | a/    | /a/   |       | .a    | /.a   | .a/   | /.a/  |       | a.md  | /a.md | a.md/ | /a.md/|
+|  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |
+| first | a/    | /a/   | a/    | /a/   |       | .a/   | /.a/  | .a/   | /.a/  |       | ?     | ?     | ?     | ?     |
+| middle| a/    | a/    | a/    | a/    |       | .a/   | .a/   | .a/   |  .a/  |       | ?     | ?     | ?     | ?     |
+| last  | a     | a     | a     | a     |       | .a    | .a    | .a    | .a    |       | a.md  | a.md  | a.md  | a.md  |
+'''
+
+def format_middle_path(middle_path:str):
+    if middle_path.startswith("/"):
+        return middle_path[1:]
+    return middle_path

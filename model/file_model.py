@@ -2,14 +2,14 @@
 from model.context_model import FolderContext
 from support import encrypter_support, path_support
 
-FOLDER_CONTEXT_KEY = 'folder_context'
-FILE_CODE_KEY = 'code'
-FS_ID_KEY = 'fs_id'
-FILE_NAME_KEY = 'file_name'
-MIDDLE_PATH_KEY = 'middle_path'
-ENCRYPT_MIDDLE_PATH_KEY= 'encrypt_middle_path'
-ENCRYPT_KEY = 'encrypt'
-LOCAL_MTIME_KEY = 'local_mtime'
+KEY_FOLDER_CONTEXT = 'folder_context'
+KEY_CODE = 'code'
+KEY_FS_ID = 'fs_id'
+KEY_FILE_NAME = 'file_name'
+KEY_MIDDLE_PATH = 'middle_path'
+KEY_ENCRYPT_MIDDLE_PATH= 'encrypt_middle_path'
+KEY_ENCRYPT = 'encrypt'
+KEY_LOCAL_MTIME = 'local_mtime'
 
 class FileModel:
     __folder_context:FolderContext
@@ -20,15 +20,6 @@ class FileModel:
     __encrypt_middle_path:str
     __encrypt:bool
     __local_mtime:str
-    def __init__(self, folder_context:FolderContext, local_file_path:str, fs_id:str='',encrypt:str=False):
-        self.__folder_context = folder_context
-        self.__file_name = local_file_path.split('/')[-1]
-        self.__middle_path = local_file_path.removeprefix(folder_context.get_local_base_path())
-        self.__encrypt_middle_path = '/'.join([encrypter_support.string_source_to_base64_string(p) for p in self.__middle_path.split('/')])
-        self.__code = encrypter_support.string_hash(self.__middle_path)
-        self.__encrypt = encrypt
-        self.__local_mtime = path_support.get_mtime(local_file_path)
-        self.__fs_id = fs_id        
 
     def get_folder_context(self):
         return self.__folder_context
@@ -65,16 +56,40 @@ class FileModel:
 
     def to_json(self):
         return {
-            FOLDER_CONTEXT_KEY: self.__folder_context.to_json(),
-            FILE_CODE_KEY: self.__code,
-            FS_ID_KEY: self.__fs_id,
-            FILE_NAME_KEY: self.__file_name,
-            MIDDLE_PATH_KEY: self.__middle_path,
-            ENCRYPT_KEY: self.__encrypt,
-            LOCAL_MTIME_KEY: self.__local_mtime
+            KEY_FOLDER_CONTEXT: self.__folder_context.to_json(),
+            KEY_CODE: self.__code,
+            KEY_FS_ID: self.__fs_id,
+            KEY_FILE_NAME: self.__file_name,
+            KEY_MIDDLE_PATH: self.__middle_path,
+            KEY_ENCRYPT: self.__encrypt,
+            KEY_LOCAL_MTIME: self.__local_mtime
         }
 
     def get_file_local_path(self):
         return path_support.merge_path([self.__folder_context.get_local_base_path(), self.__middle_path])
     def get_file_cloud_path(self):
         return path_support.merge_path([self.__folder_context.get_cloud_base_path(), self.__middle_path])
+
+def build_from_file(folder_context:FolderContext, local_file_path:str, fs_id:str='',encrypt:bool=False):
+    the_file_model = FileModel()
+    the_file_model.set_folder_context(folder_context)
+    the_file_model.set_file_name(local_file_path.split('/')[-1])
+    the_file_model.set_middle_path(local_file_path.removeprefix(folder_context.get_local_base_path()))
+    the_file_model.set_encrypt_middle_path('/'.join([encrypter_support.string_source_to_base64_string(p) for p in the_file_model.get_middle_path().split('/')]))
+    the_file_model.set_code(encrypter_support.string_hash(the_file_model.get_middle_path()))
+    the_file_model.set_encrypt(encrypt)
+    the_file_model.set_fs_id(fs_id)
+    the_file_model.set_local_mtime(path_support.get_mtime(local_file_path))
+    return the_file_model
+
+def build_from_data(folder_context:FolderContext, code:str, fs_id:str, file_name:str, middle_path:str, encrypt:bool, local_mtime:str):
+    the_file_model = FileModel()
+    the_file_model.set_folder_context(folder_context)
+    the_file_model.set_code(code)
+    the_file_model.set_fs_id(fs_id)
+    the_file_model.set_file_name(file_name)
+    the_file_model.set_middle_path(middle_path)
+    the_file_model.set_encrypt_middle_path('/'.join([encrypter_support.string_source_to_base64_string(p) for p in middle_path.split('/')]))
+    the_file_model.set_encrypt(encrypt)
+    the_file_model.set_local_mtime(local_mtime)
+    return the_file_model

@@ -12,6 +12,7 @@ access_token = config_support.config.get_access_token()
 refresh_token = config_support.config.get_refresh_token()
 app_key = config_support.config.get_app_key()
 secret_key = config_support.config.get_secret_key()
+bdwp_code = config_support.config.get_bdwp_code()
 
 def http_request(url, method, headers, params={}, payload={}, files={}):
     res = requests.request(method, url, params=params, headers=headers, data = payload, files = files, timeout=360)
@@ -29,6 +30,20 @@ def bdwp_request_with_token(url, method, headers={}, params={}, payload={} ,file
 
 def refresh_token():
     params = {"grant_type": "refresh_token", "refresh_token":refresh_token, "client_id":app_key, "client_secret":secret_key}
+    res = http_request(oauth_url, "GET", headers, params)
+    print(res.text)
+    json_result = res.json()
+    res.close()
+    return json_result
+
+def get_access_token():
+    params = {
+        "grant_type": "authorization_code", 
+        "code":bdwp_code,
+        "client_id":app_key, 
+        "client_secret":secret_key,
+        "redirect_uri": "oob"
+    }
     res = http_request(oauth_url, "GET", headers, params)
     print(res.text)
     json_result = res.json()
@@ -148,11 +163,21 @@ def get_file_meta(file_fsid):
     params = {"fsids": json.dumps([file_fsid]), "method": "filemetas", "dlink": 1, "extra": 1, "needmedia": 1}
     return bdwp_request_with_token(url, "GET", headers, params)
 
-def download_file(dlink, local_output_absolute_path):
+def get_file_content_by_path(cloud_base_path:str, middle_path:str):
+    res = search_file(middle_path, cloud_base_path)
+    fs_id = res['list'][0]['fs_id']
+    res = get_file_meta(fs_id)
+    dlink = res['list'][0]['dlink']
+    return get_file_content(dlink)
+
+def get_file_content(dlink):
     dlink += "&access_token=" + access_token
     res = http_request(dlink, "GET", headers)
-    file_support.write_file_byte(local_output_absolute_path, res.content)
     res.close()
+    return res.content
+
+def download_file(dlink, local_output_absolute_path):
+    file_support.write_file_byte(local_output_absolute_path, get_file_content(dlink))
 
 def download_file_with_path(local_base_path:str, cloud_base_path:str, middle_path:str):
     res = search_file(middle_path, cloud_base_path)

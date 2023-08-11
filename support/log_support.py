@@ -7,13 +7,15 @@ import logging, time
 #     datefmt='%Y-%m-%d %H:%M:%S',
 #     level=logging.INFO,
 # )
+def log_info(content):
+    print_log("--> " + content)
 
 def log_upload_file_success(a_file_model: file_model.FileModel):
-    log_info("--> upload success: " + a_file_model.get_middle_path())
+    print_log("--> upload success: " + a_file_model.get_middle_path())
 
 def log_delete_local_file_success(a_file_model: file_model.FileModel):
-    log_info("--> local delete success: " + a_file_model.get_middle_path())
+    print_log("--> local delete success: " + a_file_model.get_middle_path())
 
-def log_info(content):
+def print_log(content):
     print(content)
 

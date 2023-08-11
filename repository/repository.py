@@ -6,11 +6,13 @@ import json
 class FileDB:
     __folder_context: context_model.FolderContext
     __db_context: context_model.DBContext
+    __db_path: str
     __file_dict: dict
 
-    def __init__(self, folder_context:context_model.FolderContext, db_context:context_model.DBContext):
+    def __init__(self, folder_context:context_model.FolderContext, db_context:context_model.DBContext, db_path:str):
         self.__folder_context = folder_context
         self.__db_context = db_context
+        self.__db_path = db_path
         self.__file_dict = {}
 
     def load_from_db_file(self, existing_db_file_path:str):
@@ -18,31 +20,35 @@ class FileDB:
             return
         file_dict_json:dict = json.loads(file_support.read_file_as_string(existing_db_file_path))
         for key, value in file_dict_json.items():
-            local_file_path = path_support.merge_path([self.__folder_context.get_local_base_path(), value[file_model.MIDDLE_PATH_KEY]])
-            self.__file_dict[key] = file_model.FileModel(self.__folder_context, local_file_path, value[file_model.FS_ID_KEY], value[file_model.ENCRYPT_KEY])
+            self.__file_dict[key] = file_model.build_from_data(self.__folder_context, value[file_model.KEY_CODE], value[file_model.KEY_FS_ID], value[file_model.KEY_FILE_NAME], value[file_model.KEY_MIDDLE_PATH], value[file_model.KEY_ENCRYPT], value[file_model.KEY_LOCAL_MTIME])
 
     def get_folder_context(self):
         return self.__folder_context
     def get_db_context(self):
         return self.__db_context
+    def get_db_path(self):
+        return self.__db_path
     def get_file_dict(self):
         return self.__file_dict
     def set_folder_context(self, folder_context):
         self.__folder_context = folder_context
     def set_db_context(self, db_context):
         self.__db_context = db_context
+    def set_db_path(self, db_path):
+        self.__db_path = db_path
     def set_file_dict(self, file_dict):
         self.__file_dict = file_dict
+    
     
     def update_from_latest_index(self, latest_index: dict):
         for file_code, file_meta in latest_index.items():
             if file_code in self.__file_dict:
                 intersation_file_model: file_model.FileModel = self.__file_dict[file_code]
-                if file_meta[file_model.LOCAL_MTIME_KEY] != intersation_file_model.get_local_mtime():
-                    intersation_file_model.set_local_mtime(file_meta[file_model.LOCAL_MTIME_KEY])
+                if file_meta[file_model.KEY_LOCAL_MTIME] != intersation_file_model.get_local_mtime():
+                    intersation_file_model.set_local_mtime(file_meta[file_model.KEY_LOCAL_MTIME])
             else:
-                local_file_path = self.__folder_context.get_local_base_path()+file_meta[file_model.MIDDLE_PATH_KEY]
-                self.__file_dict[file_code] = file_model.FileModel(self.__folder_context, local_file_path, '', file_meta[file_model.ENCRYPT_KEY])
+                local_file_path = self.__folder_context.get_local_base_path()+file_meta[file_model.KEY_MIDDLE_PATH]
+                self.__file_dict[file_code] = file_model.build_from_file(self.__folder_context, local_file_path, '', file_meta[file_model.KEY_ENCRYPT])
 
     def get_file_dict_difference(self, to_compare_dict: dict):
         res = {}
@@ -72,11 +78,12 @@ class FileDB:
         return json.dumps(self.file_dict_to_json(), indent=4, ensure_ascii=False)
 
     def persistence(self):
-        file_support.write_file(self.__db_context.get_local_db_path(), self.to_formatted_json_string())
+        file_support.write_file(self.get_db_path(), self.to_formatted_json_string())
 
     # CRUD for FileModel
     def remove_file_model(self, key:str):
-        del self.__file_dict[key]
+        if key in self.__file_dict:
+            del self.__file_dict[key]
     def update_file_model_local_mtime_by_code(self, key:str, local_mtime:str):
         target_model:file_model.FileModel = self.__file_dict[key]
         target_model.set_local_mtime(local_mtime)
@@ -84,7 +91,7 @@ class FileDB:
         target_model:file_model.FileModel = self.__file_dict[a_file_model.get_code()]
         target_model.set_local_mtime(local_mtime)
     def add_file_by_path(self, file_path:str, fs_id: str = '', encrypt: bool = False):
-        a_file_model = file_model.FileModel(self.__folder_context, file_path, fs_id, encrypt)
-        self.add_file_by_model(a_file_model)
-    def add_file_by_model(self, a_file_model:file_model.FileModel):
+        a_file_model = file_model.build_from_file(self.__folder_context, file_path, fs_id, encrypt)
+        self.add_update_file_by_model(a_file_model)
+    def add_update_file_by_model(self, a_file_model:file_model.FileModel):
         self.__file_dict[a_file_model.get_code()] = a_file_model
