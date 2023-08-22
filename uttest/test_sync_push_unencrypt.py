@@ -21,19 +21,20 @@ def init_test_environment():
     path_support.create_folder(test_constant.SWAP_PATH_ROOT)
     # init local folder
     path_support.create_folder(test_constant.LOCAL_PATH_ROOT)
-    test_support.local_create_store_file(test_constant.TD_MIDDLE_SAME, test_constant.TD_CONTENT_DEFAULT, test_constant.LOCAL_DB, False, test_constant.TD_OLDTIEM)
-    test_support.local_create_store_file(test_constant.TD_MIDDLE_CREATE, test_constant.TD_CONTENT_DEFAULT, test_constant.LOCAL_DB, False, test_constant.TD_NEWTIME)
-    test_support.local_create_store_file(test_constant.TD_MIDDLE_UPDATE, test_constant.TD_CONTENT_UPDATE, test_constant.LOCAL_DB, False, test_constant.TD_NEWTIME)
-    test_support.local_create_store_file(test_constant.TD_MIDDLE_SAME_2, test_constant.TD_CONTENT_DEFAULT, test_constant.LOCAL_DB, False, test_constant.TD_OLDTIEM)
+    test_support.local_create_store_file(test_constant.TD_MIDDLE_SAME, test_constant.TD_CONTENT_DEFAULT, test_constant.LOCAL_DB, False, test_constant.TD_OLDTIEM, file_model.MODE_LOCAL)
+    test_support.local_create_store_file(test_constant.TD_MIDDLE_CREATE, test_constant.TD_CONTENT_DEFAULT, test_constant.LOCAL_DB, False, test_constant.TD_NEWTIME, file_model.MODE_LOCAL)
+    test_support.local_create_store_file(test_constant.TD_MIDDLE_UPDATE, test_constant.TD_CONTENT_UPDATE, test_constant.LOCAL_DB, False, test_constant.TD_NEWTIME, file_model.MODE_LOCAL)
+    test_support.local_create_store_file(test_constant.TD_MIDDLE_SAME_2, test_constant.TD_CONTENT_DEFAULT, test_constant.LOCAL_DB, False, test_constant.TD_OLDTIEM, file_model.MODE_LOCAL)
     file_support.write_file(test_constant.LOCAL_PATH_DB, test_constant.LOCAL_DB.to_formatted_json_string())
     # init mock cloud and cloud folder
     path_support.create_folder(test_constant.MOCK_CLOUD_PATH_ROOT)
-    test_support.local_create_store_file(test_constant.TD_MIDDLE_SAME, test_constant.TD_CONTENT_DEFAULT, test_constant.MOCK_CLOUD_DB, False, test_constant.TD_OLDTIEM)
-    test_support.local_create_store_file(test_constant.TD_MIDDLE_UPDATE, test_constant.TD_CONTENT_DEFAULT, test_constant.MOCK_CLOUD_DB, False, test_constant.TD_OLDTIEM)
-    test_support.local_create_store_file(test_constant.TD_MIDDLE_SAME_2, test_constant.TD_CONTENT_DEFAULT, test_constant.MOCK_CLOUD_DB, False, test_constant.TD_OLDTIEM)
-    test_support.local_create_store_file(test_constant.TD_MIDDLE_DELETE, test_constant.TD_CONTENT_DEFAULT, test_constant.MOCK_CLOUD_DB, False, test_constant.TD_OLDTIEM)
+    test_support.local_create_store_file(test_constant.TD_MIDDLE_SAME, test_constant.TD_CONTENT_DEFAULT, test_constant.MOCK_CLOUD_DB, False, test_constant.TD_OLDTIEM, file_model.MODE_CLOUD)
+    test_support.local_create_store_file(test_constant.TD_MIDDLE_UPDATE, test_constant.TD_CONTENT_DEFAULT, test_constant.MOCK_CLOUD_DB, False, test_constant.TD_OLDTIEM, file_model.MODE_CLOUD)
+    test_support.local_create_store_file(test_constant.TD_MIDDLE_SAME_2, test_constant.TD_CONTENT_DEFAULT, test_constant.MOCK_CLOUD_DB, False, test_constant.TD_OLDTIEM, file_model.MODE_CLOUD)
+    test_support.local_create_store_file(test_constant.TD_MIDDLE_DELETE, test_constant.TD_CONTENT_DEFAULT, test_constant.MOCK_CLOUD_DB, False, test_constant.TD_OLDTIEM, file_model.MODE_CLOUD)
     file_support.write_file(test_constant.MOCK_CLOUD_PATH_DB, test_constant.MOCK_CLOUD_DB.to_formatted_json_string())
-    test_support.upload_mock_cloud_to_cloud(test_constant.MOCK_CLOUD_DB, test_constant.LOCAL_DB.get_db_context().get_cloud_db_path())
+    test_support.upload_mock_cloud_to_cloud(test_constant.MOCK_CLOUD_FOLDER_CONTEXT.get_local_base_path(), test_constant.MOCK_CLOUD_FOLDER_CONTEXT.get_cloud_base_path())
+    # test_support.upload_mock_cloud_to_cloud(test_constant.MOCK_CLOUD_DB, test_constant.LOCAL_DB.get_db_context().get_cloud_db_path())
 
 def trigger():
         # init latest indexs

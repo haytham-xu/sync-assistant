@@ -1,4 +1,11 @@
 
+def read_file_as_byte_string(file_path):
+    res = None
+    with open(file_path, 'rb') as f:
+        res = f.read()
+    f.close()
+    return res
+
 def read_file_as_string(file_path):
     res = None
     with open(file_path) as f:

@@ -8,5 +8,7 @@ local/
 test.py
 .vscode
 
-/uttest
 config-test.yaml
+uttest/to_delete
+uttest/tmp
+del/

@@ -16,4 +16,4 @@ def download_cloud_db(folder_context:context_model.FolderContext, db_context:con
         path_support.create_file(db_context.get_swap_db_path(), json.dumps({}))
 
 def upload_cloud_db(db_context:context_model.DBContext):
-    bdwp_support.upload_file(db_context.get_local_db_path(), db_context.get_cloud_db_path())
+    bdwp_support.upload_file(db_context.get_swap_db_path(), db_context.get_cloud_db_path())

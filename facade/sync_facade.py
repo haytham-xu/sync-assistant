@@ -1,9 +1,9 @@
 
 
 from facade import handler_facade
-from service import buffer_service, index_service, cloud_file_service
+from service import buffer_service, index_service
 from repository import repository
-from model import context_model
+from model import context_model, file_model
 from support import log_support
 
 def sync(local_base_path:str, cloud_base_path:str, swap_base_path:str, encrypt:bool, mode:str, latest_index:dict={}):
@@ -15,6 +15,7 @@ def sync(local_base_path:str, cloud_base_path:str, swap_base_path:str, encrypt:b
         sync_push(folder_context, db_context, encrypt, latest_index)
     else:
         sync_pull(folder_context, db_context, encrypt, latest_index)
+    input()
     buffer_service.remove_buffer_folder(folder_context)
 
 def sync_pull(folder_context:context_model.FolderContext, db_context:context_model.DBContext, encrypt:bool, latest_index:dict):
@@ -23,11 +24,11 @@ def sync_pull(folder_context:context_model.FolderContext, db_context:context_mod
     log_support.log_info("download cloud db success.")
     if latest_index == {}:
         latest_index:dict = index_service.get_latest_index(folder_context.get_local_base_path(), encrypt)
-    local_db = repository.FileDB(folder_context, db_context, db_context.get_local_db_path())
-    local_db.load_from_db_file(db_context.get_local_db_path())
-    swap_db = repository.FileDB(folder_context, db_context, db_context.get_swap_db_path())
-    swap_db.load_from_db_file(db_context.get_swap_db_path())
-    local_db.update_from_latest_index(latest_index)
+    local_db = repository.FileDB(folder_context, db_context, db_context.get_local_db_path(), repository.MODE_LOCAL)
+    local_db.load_from_db_file(db_context.get_local_db_path(), file_model.MODE_LOCAL)
+    swap_db = repository.FileDB(folder_context, db_context, db_context.get_swap_db_path(), repository.MODE_CLOUD)
+    swap_db.load_from_db_file(db_context.get_swap_db_path(), file_model.MODE_CLOUD)
+    local_db.update_from_latest_index(latest_index, file_model.MODE_LOCAL)
 
     need_create_files:dict = swap_db.get_file_dict_difference(local_db.get_file_dict())
     need_delete_files:dict = local_db.get_file_dict_difference(swap_db.get_file_dict())
@@ -42,14 +43,15 @@ def sync_pull(folder_context:context_model.FolderContext, db_context:context_mod
 
 def sync_push(folder_context:context_model.FolderContext, db_context:context_model.DBContext, encrypt:bool, latest_index:dict):
     buffer_service.download_cloud_db(folder_context, db_context)
+    # input()
     if latest_index == {}:
         latest_index:dict = index_service.get_latest_index(folder_context.get_local_base_path(), encrypt)
-    local_db = repository.FileDB(folder_context, db_context, db_context.get_local_db_path())
-    local_db.load_from_db_file(db_context.get_local_db_path())
-    swap_db = repository.FileDB(folder_context, db_context, db_context.get_swap_db_path())
-    swap_db.load_from_db_file(db_context.get_swap_db_path())
+    local_db = repository.FileDB(folder_context, db_context, db_context.get_local_db_path(), repository.MODE_LOCAL)
+    local_db.load_from_db_file(db_context.get_local_db_path(), file_model.MODE_LOCAL)
+    swap_db = repository.FileDB(folder_context, db_context, db_context.get_swap_db_path(), repository.MODE_CLOUD)
+    swap_db.load_from_db_file(db_context.get_swap_db_path(), file_model.MODE_CLOUD)
 
-    local_db.update_from_latest_index(latest_index)
+    local_db.update_from_latest_index(latest_index, file_model.MODE_LOCAL)
     need_create_files:dict = local_db.get_file_dict_difference(swap_db.get_file_dict())
     need_delete_files:dict = swap_db.get_file_dict_difference(local_db.get_file_dict())
     need_update_files:dict = local_db.get_file_dict_intersation_and_mtime_difference(swap_db.get_file_dict())

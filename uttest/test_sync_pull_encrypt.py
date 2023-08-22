@@ -1,12 +1,12 @@
 
-from uttest import test_constant
-from support.config_support import config
+# from uttest import test_constant
+# from support.config_support import config
 
-def test_sync_pull_encrypt():
-    sync_folder_list = [{
-        config.get_key_cloud_folder(): test_constant.TEST_CLOUD_BASE_PATH,
-        config.get_key_local_folder(): test_constant.TEST_LOCAL_BASE_PATH,
-        config.get_key_encrypt(): True,
-        config.get_key_mode(): test_constant.TEST_MODE_SUBORDINATE
-    }]
-    config.set_sync_folder(sync_folder_list)
+# def test_sync_pull_encrypt():
+#     sync_folder_list = [{
+#         config.get_key_cloud_folder(): test_constant.CLOUD_PATH_ROOT,
+#         config.get_key_local_folder(): test_constant.LOCAL_PATH_ROOT,
+#         config.get_key_encrypt(): True,
+#         config.get_key_mode(): test_constant.TD_MODE_SUBORDINATE
+#     }]
+#     config.set_sync_folder(sync_folder_list)

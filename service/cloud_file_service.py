@@ -11,7 +11,7 @@ def download_file_by_fsid(a_folder_model:file_model.FileModel):
     if not a_folder_model.get_encrypt():
         bdwp_support.download_file(dlink, a_folder_model.get_file_local_path())
         return
-    swap_encrypter_file_path = path_support.merge_path([a_folder_model.get_folder_context().get_swap_base_path(), a_folder_model.get_encrypt_middle_path()])
+    swap_encrypter_file_path = path_support.merge_path([a_folder_model.get_folder_context().get_swap_base_path(), a_folder_model.get_middle_path()])
     bdwp_support.download_file(dlink, swap_encrypter_file_path)
     encrypter_support.file_decrtpt(swap_encrypter_file_path, a_folder_model.get_file_local_path())
 
@@ -19,17 +19,20 @@ def upload_file(a_file_model:file_model.FileModel):
     local_file_path = a_file_model.get_file_local_path()
     cloud_file_path = a_file_model.get_file_cloud_path()
     if a_file_model.get_encrypt():
-        swap_encrypter_file_path = path_support.merge_path([a_file_model.get_folder_context().get_swap_base_path(), a_file_model.get_encrypt_middle_path()])
-        cloud_encrypter_file_path = path_support.merge_path([a_file_model.get_file_cloud_path(), a_file_model.get_encrypt_middle_path()])
-        return upload_encryot_file(local_file_path, swap_encrypter_file_path, cloud_encrypter_file_path)
-    return upload_unencryot_file(local_file_path, cloud_file_path)
+        swap_file_path = a_file_model.get_file_swap_path()
+        encrypter_support.file_encrypt(local_file_path, swap_file_path)
+        local_file_path = swap_file_path
+        # swap_encrypter_file_path = path_support.merge_path([a_file_model.get_folder_context().get_swap_base_path(), a_file_model.get_middle_path()])
+        # cloud_encrypter_file_path = path_support.merge_path([a_file_model.get_file_cloud_path(), a_file_model.get_middle_path()])
+        # return upload_encryot_file(local_file_path, swap_encrypter_file_path, cloud_encrypter_file_path)
+    return upload_file_by_path(local_file_path, cloud_file_path)
 
-def upload_unencryot_file(local_file_path, cloud_file_path):
+def upload_file_by_path(local_file_path, cloud_file_path):
     return bdwp_support.upload_file(local_file_path, cloud_file_path) # fs_id
 
-def upload_encryot_file(local_file_path, swap_encrypter_file_path, cloud_encrypter_file_path):
-    encrypter_support.file_encrypt(local_file_path, swap_encrypter_file_path)
-    return bdwp_support.upload_file(swap_encrypter_file_path, cloud_encrypter_file_path) # fs_id
+# def upload_encryot_file(local_file_path, swap_encrypter_file_path, cloud_encrypter_file_path):
+#     encrypter_support.file_encrypt(local_file_path, swap_encrypter_file_path)
+#     return bdwp_support.upload_file(swap_encrypter_file_path, cloud_encrypter_file_path) # fs_id
 
 def is_exist(cloud_file_path:str):
     return bdwp_support.is_file_exist_in_cloud(cloud_file_path)
