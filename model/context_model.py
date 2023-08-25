@@ -32,32 +32,22 @@ class FolderContext:
             SWAP_BASE_PATH_KEY: self.__swap_base_path
         }
 
-class DBContext:
-    __folder_context: FolderContext
-    __db_name:str
-    __local_db_path:str
-    __cloud_db_path:str
-    __swap_db_path:str
-    def __init__(self, local_base_path, cloud_base_path, swap_base_path):
-        self.__folder_context = FolderContext(local_base_path, cloud_base_path, swap_base_path)
-        folder_name = local_base_path.split('/')[-1]
-        self.__db_name = '.' + folder_name + '.json'
-        self.__local_db_path = path_support.merge_path([self.__folder_context.get_local_base_path(), self.__db_name])
-        self.__cloud_db_path = path_support.merge_path([self.__folder_context.get_cloud_base_path(), self.__db_name])
-        self.__swap_db_path = path_support.merge_path([self.__folder_context.get_swap_base_path(), self.__db_name])
-    def get_db_name(self):
-        return self.__db_name
-    def get_local_db_path(self):
-        return self.__local_db_path
-    def get_cloud_db_path(self):
-        return self.__cloud_db_path
-    def get_swap_db_path(self):
-        return self.__swap_db_path
-    def set_db_name(self, db_name):
-        self.__db_name = db_name
-    def set_local_db_path(self, local_db_path):
-        self.__local_db_path = local_db_path
-    def set_cloud_db_path(self, cloud_db_path):
-        self.__cloud_db_path = cloud_db_path
-    def set_swap_db_path(self, swap_db_path):
-        self.__swap_db_path = swap_db_path
+def get_local_db_name(the_folder_context: FolderContext):
+    local_base_path = the_folder_context.get_local_base_path()
+    folder_name = local_base_path.split('/')[-2]
+    return '.' + folder_name + '.json'
+
+def get_cloud_db_name(the_folder_context: FolderContext):
+    cloud_base_path = the_folder_context.get_cloud_base_path()
+    folder_name = cloud_base_path.split('/')[-2]
+    return '.' + folder_name + '.json'
+
+
+def get_local_db_path(the_folder_context: FolderContext):
+    return path_support.merge_path([the_folder_context.get_local_base_path(), get_local_db_name(the_folder_context)])
+
+def get_cloud_db_path(the_folder_context: FolderContext):
+    return path_support.merge_path([the_folder_context.get_cloud_base_path(), get_cloud_db_name(the_folder_context)])
+
+def get_swap_db_path(the_folder_context: FolderContext):
+    return path_support.merge_path([the_folder_context.get_swap_base_path(), get_cloud_db_name(the_folder_context)])

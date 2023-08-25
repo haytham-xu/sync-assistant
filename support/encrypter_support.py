@@ -35,6 +35,9 @@ def file_decrtpt(source_filepath, target_filepath):
     # file_support.write_file_byte(target_filepath, decrypted_data)
     path_support.create_file_byte(target_filepath, decrypted_data)
 
+def data_decrtpt(source_data):
+    return fernet.decrypt(source_data)
+
 def get_sha256(file_path):
     sha256 = hashlib.sha256()
     with open(file_path, 'rb') as f:
