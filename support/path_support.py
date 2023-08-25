@@ -1,6 +1,8 @@
 
 from support import file_support
-import os, shutil
+
+import os
+import shutil
 
 def create_file(file_path, file_content):
     parent_path = '/'.join(file_path.split('/')[:-1])
@@ -72,15 +74,6 @@ def merge_path(path_list:list):
         output_path = os.path.join(output_path, p)    
     return output_path
 
-
-'''
-|       | a     | /a    | a/    | /a/   |       | .a    | /.a   | .a/   | /.a/  |       | a.md  | /a.md | a.md/ | /a.md/|
-|  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |
-| first | a/    | /a/   | a/    | /a/   |       | .a/   | /.a/  | .a/   | /.a/  |       | ?     | ?     | ?     | ?     |
-| middle| a/    | a/    | a/    | a/    |       | .a/   | .a/   | .a/   |  .a/  |       | ?     | ?     | ?     | ?     |
-| last  | a     | a     | a     | a     |       | .a    | .a    | .a    | .a    |       | a.md  | a.md  | a.md  | a.md  |
-'''
-
 def format_middle_path(middle_path:str):
     if middle_path.startswith("/"):
         return middle_path[1:]
@@ -100,3 +93,10 @@ def list_file_recursion(current_path:str):
             file_list.append(folder_or_file_path)
     return file_list
 
+'''
+|       | a     | /a    | a/    | /a/   |       | .a    | /.a   | .a/   | /.a/  |       | a.md  | /a.md | a.md/ | /a.md/|
+|  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |
+| first | a/    | /a/   | a/    | /a/   |       | .a/   | /.a/  | .a/   | /.a/  |       | ?     | ?     | ?     | ?     |
+| middle| a/    | a/    | a/    | a/    |       | .a/   | .a/   | .a/   |  .a/  |       | ?     | ?     | ?     | ?     |
+| last  | a     | a     | a     | a     |       | .a    | .a    | .a    | .a    |       | a.md  | a.md  | a.md  | a.md  |
+'''

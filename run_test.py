@@ -1,6 +1,9 @@
 
+from uttest import test_sync_push_unencrypt
+from uttest import test_constant
+from uttest import test_sync_push_encrypt
+
 from support.config_support import config
-from uttest import test_sync_push_unencrypt, test_constant, test_sync_push_encrypt
 
 if __name__ == "__main__":
     config.set_swap_folder_path(test_constant.SWAP_PATH_ROOT)

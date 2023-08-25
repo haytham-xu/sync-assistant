@@ -1,9 +1,9 @@
 
 
-from repository import local_repository, cloud_repository
 from model import context_model
 from support import encrypter_support
-from support.path_support import merge_path
+from support import path_support
+
 from support.config_support import config
 
 # base
@@ -15,28 +15,21 @@ BASE_NAME_DB = "." + BASE_NAME_TEST_FOLDER + ".json"
 
 # swap
 SWAP_NAME_FOLDER = "swap"
-SWAP_PATH_ROOT = merge_path([BASE_PATH_LOCAL_ROOT, SWAP_NAME_FOLDER])         # ./uttest/tmp/swap
+SWAP_PATH_ROOT = path_support.merge_path([BASE_PATH_LOCAL_ROOT, SWAP_NAME_FOLDER])                   # ./uttest/tmp/swap
 # cloud
-CLOUD_PATH_ROOT = merge_path([BASE_PATH_CLOUD_ROOT, BASE_NAME_TEST_FOLDER])             # /apps/sync-assistant/test_folder
-CLOUD_PATH_DB = merge_path([CLOUD_PATH_ROOT, BASE_NAME_DB])
+CLOUD_PATH_ROOT = path_support.merge_path([BASE_PATH_CLOUD_ROOT, BASE_NAME_TEST_FOLDER])             # /apps/sync-assistant/test_folder
+CLOUD_PATH_DB = path_support.merge_path([CLOUD_PATH_ROOT, BASE_NAME_DB])
 # local folder
-LOCAL_PATH_ROOT = merge_path([BASE_PATH_LOCAL_ROOT, BASE_NAME_TEST_FOLDER])             # ./uttest/tmp/test_folder
-LOCAL_PATH_DB = merge_path([LOCAL_PATH_ROOT, BASE_NAME_DB])
-
+LOCAL_PATH_ROOT = path_support.merge_path([BASE_PATH_LOCAL_ROOT, BASE_NAME_TEST_FOLDER])             # ./uttest/tmp/test_folder
+LOCAL_PATH_DB = path_support.merge_path([LOCAL_PATH_ROOT, BASE_NAME_DB])
 
 # folder context
 BASE_FOLDER_CONTEXT = context_model.FolderContext(LOCAL_PATH_ROOT, CLOUD_PATH_ROOT, SWAP_PATH_ROOT)
 
-# LOCAL_FOLDER_CONTEXT = context_model.FolderContext(LOCAL_PATH_ROOT, CLOUD_PATH_ROOT, SWAP_PATH_ROOT)
-# LOCAL_DB = repository.FileDB(LOCAL_FOLDER_CONTEXT, LOCAL_DB_CONTEXT, LOCAL_DB_CONTEXT.get_local_db_path(), repository.MODE_LOCAL)
-
 # mock cloud
 MOCK_CLOUD_NAME_FOLDER = "mock_cloud"
-# MOCK_CLOUD_NAME_DB = "." + BASE_NAME_TEST_FOLDER + ".json"
-MOCK_CLOUD_PATH_ROOT = merge_path([BASE_PATH_LOCAL_ROOT, MOCK_CLOUD_NAME_FOLDER])  # ./uttest/tmp/mock_cloud/
-MOCK_CLOUD_PATH_DB = merge_path([MOCK_CLOUD_PATH_ROOT, BASE_NAME_DB])
-# MOCK_CLOUD_FOLDER_CONTEXT = context_model.FolderContext(MOCK_CLOUD_PATH_ROOT, CLOUD_PATH_ROOT, SWAP_PATH_ROOT)
-# MOCK_CLOUD_DB = repository.FileDB(MOCK_CLOUD_FOLDER_CONTEXT, MOCK_CLOUD_DB_CONTEXT, MOCK_CLOUD_DB_CONTEXT.get_local_db_path(), repository.MODE_CLOUD)
+MOCK_CLOUD_PATH_ROOT = path_support.merge_path([BASE_PATH_LOCAL_ROOT, MOCK_CLOUD_NAME_FOLDER])  # ./uttest/tmp/mock_cloud/
+MOCK_CLOUD_PATH_DB = path_support.merge_path([MOCK_CLOUD_PATH_ROOT, BASE_NAME_DB])
 
 # test file config
 TD_MIDDLE_SAME = "same.md"

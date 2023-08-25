@@ -1,6 +1,11 @@
 
-import requests, json, os, time, hashlib
-from support import config_support, file_support
+from support import config_support
+from support import file_support
+import requests
+import json
+import os
+import time
+import hashlib
 
 oauth_url = "https://openapi.baidu.com/oauth/2.0/token"
 base_url = "https://pan.baidu.com"
@@ -24,7 +29,6 @@ def http_request(url, method, headers, params={}, payload={}, files={}):
 def bdwp_request_with_token(url, method, headers={}, params={}, payload={} ,files=[]):
     params["access_token"] = access_token
     res = http_request(url, method, headers, params, payload ,files)
-    # print(res, res.text)
     json_result = res.json()
     res.close()
     return json_result
@@ -32,7 +36,6 @@ def bdwp_request_with_token(url, method, headers={}, params={}, payload={} ,file
 def refresh_token():
     params = {"grant_type": "refresh_token", "refresh_token":refresh_token, "client_id":app_key, "client_secret":secret_key}
     res = http_request(oauth_url, "GET", headers, params)
-    print(res.text)
     json_result = res.json()
     res.close()
     return json_result
@@ -46,7 +49,6 @@ def get_access_token():
         "redirect_uri": "oob"
     }
     res = http_request(oauth_url, "GET", headers, params)
-    print(res.text)
     json_result = res.json()
     res.close()
     return json_result
@@ -83,20 +85,17 @@ def upload_chunk(upload_id, chunk_content, chunk_id, cloud_path):
     bdwp_request_with_token(upload_url, "POST", headers, params, payload, files)
 
 def create_file(cloud_path, upload_id, md5_list, file_size):
-    # print(cloud_path)
     create_url = base_url + "/rest/2.0/xpan/file"
     block_list = json.dumps(md5_list)
     payload = {'path': cloud_path, 'size': file_size, 'uploadid': upload_id, 'block_list': block_list, 'rtype': '3', 'isdir': '0'}
     params = {"method": "create"}
     res = bdwp_request_with_token(create_url, "POST", headers, params, payload)
-    # print(res)
     fs_id = res["fs_id"]
     return fs_id
 
 split_size = 50*1024*1024 # MB
 
 def upload_file(file_local_path, target_absolute_path):
-    # print(file_local_path, target_absolute_path)
     file_size = os.path.getsize(file_local_path)
     file_block = []
     md5_list = []

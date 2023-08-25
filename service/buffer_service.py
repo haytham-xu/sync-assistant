@@ -1,7 +1,9 @@
 
 from model import context_model
-from support import path_support, bdwp_support
-import shutil, json
+from support import path_support
+from support import bdwp_support
+import shutil
+import json
 
 def create_buffer_folder(folder_context: context_model.FolderContext):
     path_support.create_folder(folder_context.get_swap_base_path())

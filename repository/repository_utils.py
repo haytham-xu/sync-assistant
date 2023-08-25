@@ -1,7 +1,8 @@
 
-from model import cloud_file_model, local_file_model
-from repository import local_repository, cloud_repository
-
+from model import cloud_file_model
+from model import local_file_model
+from repository import local_repository
+from repository import cloud_repository
 
 # get file only in cloud DB
 # for push, delete in cloud
@@ -54,4 +55,3 @@ def get_file_dict_intersation_and_mtime_difference_from_cloud_repository(source_
             if  a_local_file_model.get_mtime() != a_cloud_file_model.get_mtime():
                 res[file_code] = a_local_file_model
     return res
-     

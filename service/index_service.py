@@ -1,8 +1,10 @@
 
-import os
-from support import path_support, encrypter_support
+from support import path_support
+from support import encrypter_support
 from model import base_file_model
-from support.path_support import merge_path
+from support import path_support
+
+import os
 
 def get_latest_index(base_path:str, encrypt: bool):
     file_list = []
@@ -10,7 +12,7 @@ def get_latest_index(base_path:str, encrypt: bool):
         for file_name in files:
             if file_name[0] == '.':
                 continue
-            file_path = merge_path([cur_path, file_name])
+            file_path = path_support.merge_path([cur_path, file_name])
             middle_path = path_support.format_middle_path(file_path.removeprefix(base_path))
             file_list.append({
                 base_file_model.KEY_CODE: encrypter_support.string_hash(middle_path),

@@ -1,5 +1,5 @@
 
-from model.context_model import FolderContext
+from model import context_model
 
 KEY_FOLDER_CONTEXT = 'folder_context'
 KEY_CODE = 'code'
@@ -12,7 +12,7 @@ KEY_MTIME = 'mtime'
 
 class BaseFileModel:
 
-    __folder_context:FolderContext
+    __folder_context:context_model.FolderContext
     __code:str
     __fs_id:str
     __file_name:str
@@ -20,7 +20,7 @@ class BaseFileModel:
     __encrypt:bool
     __mtime:str
     
-    def __init__(self, folder_context:FolderContext, code:str, fs_id:str, file_name:str, middle_path:str, encrypt:bool, mtime:str):
+    def __init__(self, folder_context:context_model.FolderContext, code:str, fs_id:str, file_name:str, middle_path:str, encrypt:bool, mtime:str):
         self.__folder_context = folder_context
         self.__code = code
         self.__fs_id = fs_id
@@ -42,7 +42,7 @@ class BaseFileModel:
     
     def get_folder_context(self):
         return self.__folder_context
-    def set_folder_context(self, folder_context:FolderContext):
+    def set_folder_context(self, folder_context:context_model.FolderContext):
         self.__folder_context = folder_context
 
     def get_code(self):
@@ -74,41 +74,3 @@ class BaseFileModel:
         return self.__mtime
     def set_mtime(self, local_mtime:str):
         self.__mtime = local_mtime
-
-
-    # '''
-    # local_mode unencrypted -->  middle is unencrypted, just return
-    # local_mode encrypted   -->  middle is unencrypted, just return
-    # cloud_mode unencrypted -->  middle is unencrypted, just return
-    # cloud_mode encrypted   -->  middle is encrypted, unencrypt then return
-    # '''
-    # def get_file_local_path(self):
-    #     if self.get_encrypt() and self.get_mode() == MODE_CLOUD:
-    #         unencrypted_middle_path = '/'.join([encrypter_support.string_base64_to_source_string(p) for p in self.get_middle_path().split('/')])
-    #         return path_support.merge_path([self.__folder_context.get_local_base_path(), unencrypted_middle_path])
-    #     return path_support.merge_path([self.__folder_context.get_local_base_path(), self.get_middle_path()])
-    # '''
-    # local_mode unencrypted -->  middle is unencrypted, just return
-    # local_mode encrypted   -->  middle is unencrypted, should encrypted then return
-    # cloud_mode unencrypted -->  middle is unencrypted, just return
-    # cloud_mode encrypted   -->  middle is encrypted, just return
-    # '''
-    # def get_file_cloud_path(self):
-    #     if self.get_encrypt() and self.get_mode() == MODE_LOCAL:
-    #         encrypted_middle_path = '/'.join([encrypter_support.string_source_to_base64_string(p) for p in self.get_middle_path().split('/')])
-    #         return path_support.merge_path([self.__folder_context.get_cloud_base_path(), encrypted_middle_path])
-    #     return path_support.merge_path([self.__folder_context.get_cloud_base_path(), self.get_middle_path()])
-
-    # '''
-    # local_mode unencrypted -->  middle is unencrypted, just return
-    # local_mode encrypted   -->  middle is unencrypted, should encrypted then return
-    # cloud_mode unencrypted -->  middle is unencrypted, just return
-    # cloud_mode encrypted   -->  middle is encrypted, just return
-    # swap is always for encrypted mode, so the file and folder here should always be encrypted.
-    # '''
-    # def get_file_swap_path(self):
-    #     if self.get_encrypt() and self.get_mode() == MODE_LOCAL:
-    #         encrypted_middle_path = '/'.join([encrypter_support.string_source_to_base64_string(p) for p in self.get_middle_path().split('/')])
-    #         return path_support.merge_path([self.__folder_context.get_swap_base_path(), encrypted_middle_path])
-    #     return path_support.merge_path([self.__folder_context.get_swap_base_path(), self.get_middle_path()])
-    

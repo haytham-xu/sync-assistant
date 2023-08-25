@@ -1,10 +1,14 @@
 
 from facade import sync_facade
 from service import cloud_file_service
-from model import local_file_model, cloud_file_model, base_file_model
-from repository import local_repository, cloud_repository
-from support import file_support, path_support, encrypter_support
-from uttest import test_support, test_constant
+from repository import local_repository
+from repository import cloud_repository
+from model import base_file_model
+from support import file_support
+from support import path_support
+from support import encrypter_support
+from uttest import test_support
+from uttest import test_constant
 
 import json
 
@@ -16,8 +20,6 @@ def test_sync_push_encrypt():
     except Exception as err:
         print(err.with_traceback())
     finally:
-        print("ready to clean")
-        input()
         test_support.clean_test_environment()
 
 def init_test_environment():
@@ -34,22 +36,7 @@ def init_test_environment():
     test_support.local_create_store_file(test_constant.TD_MIDDLE_SAME_2, test_constant.TD_CONTENT_DEFAULT, local_db, True, test_constant.TD_OLDTIEM)
     file_support.write_file(test_constant.LOCAL_PATH_DB, local_db.to_formatted_json_string())
 
-    # test_support.local_create_store_file(test_constant.TD_MIDDLE_SAME, test_constant.TD_CONTENT_DEFAULT, test_constant.LOCAL_DB, True, test_constant.TD_OLDTIEM, file_model.MODE_LOCAL)
-    # test_support.local_create_store_file(test_constant.TD_MIDDLE_CREATE, test_constant.TD_CONTENT_DEFAULT, test_constant.LOCAL_DB, True, test_constant.TD_NEWTIME, file_model.MODE_LOCAL)
-    # test_support.local_create_store_file(test_constant.TD_MIDDLE_UPDATE, test_constant.TD_CONTENT_UPDATE, test_constant.LOCAL_DB, True, test_constant.TD_NEWTIME, file_model.MODE_LOCAL)
-    # test_support.local_create_store_file(test_constant.TD_MIDDLE_SAME_2, test_constant.TD_CONTENT_DEFAULT, test_constant.LOCAL_DB, True, test_constant.TD_OLDTIEM, file_model.MODE_LOCAL)
-    # file_support.write_file(test_constant.LOCAL_PATH_DB, test_constant.LOCAL_DB.to_formatted_json_string())
     # init mock cloud and cloud folder
-    # path_support.create_folder(test_constant.MOCK_CLOUD_PATH_ROOT)
-    # test_support.local_create_store_file(test_constant.TD_MIDDLE_SAME, test_constant.TD_CONTENT_DEFAULT, test_constant.MOCK_CLOUD_DB, True, test_constant.TD_OLDTIEM, file_model.MODE_CLOUD)
-    # test_support.local_create_store_file(test_constant.TD_MIDDLE_UPDATE, test_constant.TD_CONTENT_DEFAULT, test_constant.MOCK_CLOUD_DB, True, test_constant.TD_OLDTIEM, file_model.MODE_CLOUD)
-    # test_support.local_create_store_file(test_constant.TD_MIDDLE_SAME_2, test_constant.TD_CONTENT_DEFAULT, test_constant.MOCK_CLOUD_DB, True, test_constant.TD_OLDTIEM, file_model.MODE_CLOUD)
-    # test_support.local_create_store_file(test_constant.TD_MIDDLE_DELETE, test_constant.TD_CONTENT_DEFAULT, test_constant.MOCK_CLOUD_DB, True, test_constant.TD_OLDTIEM, file_model.MODE_CLOUD)
-    # file_support.write_file(test_constant.MOCK_CLOUD_PATH_DB, test_constant.MOCK_CLOUD_DB.to_formatted_json_string())
-    # # test_support.upload_mock_cloud_to_cloud(test_constant.MOCK_CLOUD_DB, test_constant.LOCAL_DB.get_db_context().get_cloud_db_path())
-    # test_support.upload_mock_cloud_to_cloud(test_constant.MOCK_CLOUD_FOLDER_CONTEXT.get_local_base_path(), test_constant.MOCK_CLOUD_FOLDER_CONTEXT.get_cloud_base_path())
-
-        # init mock cloud and cloud folder
     path_support.create_folder(test_constant.MOCK_CLOUD_PATH_ROOT)
     mock_cloud_db = cloud_repository.CloudRepository(test_constant.BASE_FOLDER_CONTEXT, test_constant.BASE_NAME_DB, {}, True)
     test_support.cloud_create_store_file(test_constant.TD_MIDDLE_SAME, test_constant.TD_CONTENT_DEFAULT, mock_cloud_db, True, test_constant.TD_OLDTIEM)
@@ -61,7 +48,7 @@ def init_test_environment():
     cloud_file_service.upload_file_by_path(test_constant.MOCK_CLOUD_PATH_DB, mock_cloud_db.get_cloud_db_path())
 
 def trigger():
-        # init latest indexs
+    # init latest indexs
     latest_index = test_support.build_indexs([
         test_support.build_index(test_constant.TD_MIDDLE_SAME, test_constant.TD_OLDTIEM, True),
         test_support.build_index(test_constant.TD_MIDDLE_CREATE, test_constant.TD_NEWTIME, True),
@@ -71,10 +58,6 @@ def trigger():
     sync_facade.sync(test_constant.LOCAL_PATH_ROOT, test_constant.CLOUD_PATH_ROOT, test_constant.SWAP_PATH_ROOT, True, test_constant.TD_MODE_MASTER, latest_index)
 
 def check():
-    # assert cloud_file_service.is_exist(path_support.merge_path([test_constant.CLOUD_PATH_ROOT, test_constant.TD_MIDDLE_CREATE])) == True
-    t1 = encrypter_support.string_source_to_base64_string(test_constant.TD_MIDDLE_CREATE)
-    t2 = path_support.merge_path([test_constant.CLOUD_PATH_ROOT, t1])
-    cloud_file_service.is_exist(t2)
     assert cloud_file_service.is_exist(path_support.merge_path([test_constant.CLOUD_PATH_ROOT, test_constant.TD_MIDDLE_CREATE_ENCRYPT])) == True
     assert cloud_file_service.is_exist(path_support.merge_path([test_constant.CLOUD_PATH_ROOT, test_constant.TD_MIDDLE_SAME_ENCRYPT])) == True
     assert cloud_file_service.is_exist(path_support.merge_path([test_constant.CLOUD_PATH_ROOT, test_constant.TD_MIDDLE_SAME_2_ENCRYPT])) == True
@@ -88,20 +71,6 @@ def check():
     assert path_support.is_exist(path_support.merge_path([test_constant.LOCAL_PATH_ROOT, test_constant.TD_MIDDLE_DELETE])) == False
 
     assert cloud_file_service.get_encypt_file_content_by_path(test_constant.CLOUD_PATH_ROOT, test_constant.TD_MIDDLE_UPDATE_ENCRYPT) == test_constant.TD_CONTENT_UPDATE
-    '''
-    t4 = cloud_file_service.get_file_content_by_path(t3, t1)
-    t5 = test_constant.TD_CONTENT_DEFAULT
-
-    t6=encrypter_support.fernet.decrypt(t4)
-    t6.decode() == test_constant.TD_CONTENT_DEFAULT
-
-
-    t3 = test_constant.CLOUD_PATH_ROOT
-    bdwp_support.get_file_content_by_path(t3, t1)
-    '''
-
-
-
 
     code_file_create = encrypter_support.string_hash(test_constant.TD_MIDDLE_CREATE)
     code_file_same = encrypter_support.string_hash(test_constant.TD_MIDDLE_SAME)
