@@ -11,7 +11,7 @@ from support.log_support import logger
 def sync(local_base_path:str, cloud_base_path:str, swap_base_path:str, encrypt:bool, mode:str, latest_index:dict={}):
     folder_context = context_model.FolderContext(local_base_path, cloud_base_path, swap_base_path)
     buffer_service.create_buffer_folder(folder_context)
-    logger.info("sync mode: " + mode)
+    logger.info("<---- mode: {} | local path: {} | encrypt: {} ---->".format(mode, local_base_path, encrypt))
     if mode == "master":
         sync_push(folder_context, encrypt, latest_index)
     else:
