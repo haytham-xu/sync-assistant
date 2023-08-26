@@ -2,9 +2,11 @@
 from model import base_file_model
 from model import context_model
 from support import encrypter_support
+from support import path_support
 
 class LocalFileModel(base_file_model.BaseFileModel):
-    pass
+    def get_local_path(self):
+        return path_support.merge_path([self.get_folder_context().get_local_base_path(), self.get_middle_path()])
 
 def build_from_file_path(folder_context:context_model.FolderContext, local_file_path:str, mtime:str, encrypt:bool):
     unencrypt_middle_path = local_file_path.removeprefix(folder_context.get_local_base_path())

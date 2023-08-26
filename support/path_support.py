@@ -4,6 +4,12 @@ from support import file_support
 import os
 import shutil
 
+def copy_file_folder(source_path, target_path):
+    shutil.copytree(source_path, target_path)
+
+def move_file_folder(source_path, target_path):
+    shutil.move(source_path, target_path)
+
 def create_file(file_path, file_content):
     parent_path = '/'.join(file_path.split('/')[:-1])
     create_folder(parent_path)

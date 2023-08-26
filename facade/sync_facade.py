@@ -15,7 +15,7 @@ def sync(local_base_path:str, cloud_base_path:str, swap_base_path:str, encrypt:b
     if mode == "master":
         sync_push(folder_context, encrypt, latest_index)
     else:
-        pass
+        sync_pull(folder_context, encrypt, latest_index)
     buffer_service.remove_buffer_folder(folder_context)
 
 def sync_push(folder_context:context_model.FolderContext, encrypt:bool, latest_index:dict):
@@ -23,7 +23,7 @@ def sync_push(folder_context:context_model.FolderContext, encrypt:bool, latest_i
     if latest_index == {}:
         latest_index:dict = index_service.get_latest_index(folder_context.get_local_base_path(), encrypt)
     local_db = local_repository.LocalRepository(folder_context, context_model.get_local_db_name(folder_context), {})
-    local_db.load_from_local_db_file(context_model.get_local_db_name(folder_context))
+    local_db.load_from_local_db_file(context_model.get_local_db_path(folder_context))
     swap_db = cloud_repository.CloudRepository(folder_context, context_model.get_cloud_db_name(folder_context), {}, encrypt)
     swap_db.load_from_cloud_db_file(context_model.get_swap_db_path(folder_context))
     local_db.update_from_latest_index(latest_index)
@@ -37,3 +37,21 @@ def sync_push(folder_context:context_model.FolderContext, encrypt:bool, latest_i
     handler_facade.handle_cloud_delete(should_delete_in_cloud, swap_db)
 
     buffer_service.upload_cloud_db(folder_context)
+
+def sync_pull(folder_context:context_model.FolderContext, encrypt:bool, latest_index:dict):
+    buffer_service.download_cloud_db(folder_context)
+    if latest_index == {}:
+        latest_index:dict = index_service.get_latest_index(folder_context.get_local_base_path(), encrypt)
+    local_db = local_repository.LocalRepository(folder_context, context_model.get_local_db_name(folder_context), {})
+    local_db.load_from_local_db_file(context_model.get_local_db_path(folder_context))
+    swap_db = cloud_repository.CloudRepository(folder_context, context_model.get_cloud_db_name(folder_context), {}, encrypt)
+    swap_db.load_from_cloud_db_file(context_model.get_swap_db_path(folder_context))
+    local_db.update_from_latest_index(latest_index)
+
+    should_create_in_local = repository_utils.get_file_dict_difference_from_local_repository(swap_db, local_db)
+    should_update_in_local = repository_utils.get_file_dict_intersation_and_mtime_difference_from_local_repository(swap_db, local_db)
+    should_delete_in_local = repository_utils.get_file_dict_difference_from_cloud_repository(local_db, swap_db)
+
+    handler_facade.handle_local_create(should_create_in_local, local_db)
+    handler_facade.handle_local_update(should_update_in_local, local_db)
+    handler_facade.handle_local_delete(should_delete_in_local, local_db)
