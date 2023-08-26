@@ -1,15 +1,27 @@
 
 from service import cloud_file_service
+from service import buffer_service
 from repository import cloud_repository
 from repository import local_repository
 from model import local_file_model
 from model import cloud_file_model
 from model import model_mapper
+from model import context_model
 from support import path_support
 
 from support.log_support import logger
 
-def handle_cloud_update(need_update_files:dict, swap_db:cloud_repository.CloudRepository):
+COUNTER = 0
+def midway_upload_cloud_db(folder_context:context_model.FolderContext,upload_cloud_db_gap:int=10):
+    global COUNTER
+    COUNTER += 1
+    if COUNTER % upload_cloud_db_gap == 0:
+        buffer_service.upload_cloud_db(folder_context)
+        logger.info("--> upload cloud db in case sync failed.")
+
+    
+
+def handle_cloud_update(need_update_files:dict, swap_db:cloud_repository.CloudRepository, upload_cloud_db_gap:int=10):
     for key in need_update_files.keys():
         a_local_file_model: local_file_model.LocalFileModel = need_update_files[key]
         logger.info("cloud updating: " + a_local_file_model.get_middle_path())
@@ -19,12 +31,13 @@ def handle_cloud_update(need_update_files:dict, swap_db:cloud_repository.CloudRe
             logger.info("cloud update success: " + a_local_file_model.get_middle_path())
             swap_db.update_mtime_by_key(key, a_local_file_model.get_mtime())
             swap_db.persistence()
+            midway_upload_cloud_db(a_local_file_model.get_folder_context(), upload_cloud_db_gap)
         except Exception as err:
             logger.error("cloud update failed: {}".format(a_local_file_model.get_middle_path()))
             logger.error(err)
         
 
-def handle_cloud_create(need_create_files:dict, local_db:local_repository.LocalRepository, swap_db:cloud_repository.CloudRepository):
+def handle_cloud_create(need_create_files:dict, local_db:local_repository.LocalRepository, swap_db:cloud_repository.CloudRepository, upload_cloud_db_gap:int=10):
     for key in need_create_files.keys():
         a_local_file_model: local_file_model.LocalFileModel = need_create_files[key]
         logger.info("cloud creating: " + a_local_file_model.get_middle_path())
@@ -36,11 +49,12 @@ def handle_cloud_create(need_create_files:dict, local_db:local_repository.LocalR
             swap_db.add_file_model_from_local_file_model(a_local_file_model)
             swap_db.persistence()
             local_db.persistence()
+            midway_upload_cloud_db(a_local_file_model.get_folder_context(), upload_cloud_db_gap)
         except Exception as err:
             logger.error("cloud create failed: {}".format(a_local_file_model.get_middle_path()))
             logger.error(err)
 
-def handle_cloud_delete(need_delete_files:dict, swap_db:cloud_repository.CloudRepository):
+def handle_cloud_delete(need_delete_files:dict, swap_db:cloud_repository.CloudRepository, upload_cloud_db_gap:int=10):
     for key in need_delete_files.keys():
         a_cloud_file_model:cloud_file_model.CloudFileModel = need_delete_files[key]
         logger.info("cloud deleting: " + a_cloud_file_model.get_middle_path())
@@ -49,6 +63,7 @@ def handle_cloud_delete(need_delete_files:dict, swap_db:cloud_repository.CloudRe
             logger.info("cloud delete success: " + a_cloud_file_model.get_middle_path())
             swap_db.remove_file_model(key)
             swap_db.persistence()
+            midway_upload_cloud_db(a_cloud_file_model.get_folder_context(), upload_cloud_db_gap)
         except Exception as err:
             logger.error("cloud delete failed: {}".format(a_cloud_file_model.get_middle_path()))
             logger.error(err)

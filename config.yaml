@@ -2,3 +2,4 @@
 profile: local
 swap_folder_path: ./local/cloud/
 time_gap: 300 # second
+upload_cloud_db_gap: 50

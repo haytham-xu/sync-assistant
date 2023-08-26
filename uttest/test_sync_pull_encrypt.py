@@ -55,7 +55,7 @@ def trigger():
         test_support.build_index(test_constant.TD_MIDDLE_UPDATE, test_constant.TD_OLDTIEM, True),
         test_support.build_index(test_constant.TD_MIDDLE_SAME_2, test_constant.TD_OLDTIEM, True),
     ])
-    sync_facade.sync(test_constant.LOCAL_PATH_ROOT, test_constant.CLOUD_PATH_ROOT, test_constant.SWAP_PATH_ROOT, True, test_constant.TD_MODE_SUBORDINATE, latest_index)
+    sync_facade.sync(test_constant.LOCAL_PATH_ROOT, test_constant.CLOUD_PATH_ROOT, test_constant.SWAP_PATH_ROOT, True, test_constant.TD_MODE_SUBORDINATE, latest_index, test_constant.BASE_UPLOAD_CLOUD_DB_GAP)
 
 def check():
     assert path_support.is_exist(path_support.merge_path([test_constant.LOCAL_PATH_ROOT, test_constant.TD_MIDDLE_CREATE])) == True

@@ -50,6 +50,8 @@ class Config():
         return self.all_configs["refresh_token"]
     def get_time_gap(self):
         return self.all_configs["time_gap"]
+    def get_upload_cloud_db_gap(self):
+        return self.all_configs[self.get_key_upload_cloud_db_gap()]
     def get_key_local_folder(self):
         return "local_folder"
     def get_key_cloud_folder(self):
@@ -68,6 +70,8 @@ class Config():
         return "local_root_path"
     def get_key_sync_folder(self):
         return "sync_folder"
+    def get_key_upload_cloud_db_gap(self):
+        return "upload_cloud_db_gap"
     def get_all_configs(self):
         return self.all_configs
     def set_swap_folder_path(self, swap_folder_path:str):
