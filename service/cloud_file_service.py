@@ -46,3 +46,6 @@ def download_file(a_file_model:cloud_file_model.CloudFileModel):
         path_support.remove_path(swap_file_path)
     else:
         bdwp_support.download_file_with_path(local_base_path, cloud_base_path, middle_path)
+
+def clean_empty_cloud():
+    pass
