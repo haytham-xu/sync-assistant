@@ -18,7 +18,7 @@ def download_cloud_db(folder_context:context_model.FolderContext):
     if bdwp_support.is_file_exist_in_cloud(cloud_db_path):
         bdwp_support.download_file_with_path(folder_context.get_swap_base_path(), folder_context.get_cloud_base_path(), cloud_db_name)
     else:
-        path_support.create_file(swap_db_path, json.dumps({}))
+        path_support.create_override_file(swap_db_path, json.dumps({}))
 
 def upload_cloud_db(folder_context:context_model.FolderContext):
     swap_db_path = context_model.get_swap_db_path(folder_context)

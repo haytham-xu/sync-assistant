@@ -24,12 +24,12 @@ class SyncLogger:
         time_format = time.strftime("%Y%m%d", time.localtime())
         info_log_output_path = './logs/' + time_format +'_info.log'
         if not path_support.is_exist(info_log_output_path):
-            path_support.create_file(info_log_output_path, "")
+            path_support.create_override_file(info_log_output_path, "")
         
         self.__info_logger = get_logger("info", info_log_output_path, logging.INFO)
         error_log_output_path = './logs/' + time_format +'_error.log'
         if not path_support.is_exist(error_log_output_path):
-            path_support.create_file(error_log_output_path, "")
+            path_support.create_override_file(error_log_output_path, "")
         self.__error_logger = get_logger("error", error_log_output_path, logging.ERROR)
     def info(self, message):
         self.__info_logger.info(message)

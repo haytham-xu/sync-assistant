@@ -4,18 +4,23 @@ from support import file_support
 import os
 import shutil
 
+def get_file_folder_name(file_folder_path:str):
+    return os.path.split(file_folder_path)[-1]
+
 def copy_file_folder(source_path, target_path):
     shutil.copytree(source_path, target_path)
 
 def move_file_folder(source_path, target_path):
+    parent_path = '/'.join(target_path.split('/')[:-1])
+    create_folder(parent_path)
     shutil.move(source_path, target_path)
 
-def create_file(file_path, file_content):
+def create_override_file(file_path:str, file_content):
     parent_path = '/'.join(file_path.split('/')[:-1])
     create_folder(parent_path)
     file_support.write_file(file_path, file_content)
 
-def create_file_byte(file_path, file_content):
+def create_file_byte(file_path:str, file_content):
     parent_path = '/'.join(file_path.split('/')[:-1])
     create_folder(parent_path)
     file_support.write_file_byte(file_path, file_content)
@@ -77,7 +82,7 @@ def format_folder_path(path:str):
 def merge_path(path_list:list):
     output_path = ""
     for p in path_list:
-        output_path = os.path.join(output_path, p)    
+        output_path = os.path.join(output_path, p)
     return output_path
 
 def format_middle_path(middle_path:str):

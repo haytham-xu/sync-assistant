@@ -7,8 +7,8 @@ from model import base_file_model
 from support import file_support
 from support import path_support
 from support import encrypter_support
-from uttest import test_support
-from uttest import test_constant
+from uttest.sync_uttest import test_support
+from uttest.sync_uttest import test_constant
 
 import json
 

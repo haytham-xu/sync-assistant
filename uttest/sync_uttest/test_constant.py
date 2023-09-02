@@ -7,7 +7,7 @@ from support import path_support
 from support.config_support import config
 
 # base
-BASE_PATH_LOCAL_ROOT = "./uttest/tmp/"
+BASE_PATH_LOCAL_ROOT = "./uttest/sync_uttest/tmp/"
 BASE_PATH_CLOUD_ROOT = config.get_cloud_root_path()
 BASE_NAME_TEST_FOLDER = "test_folder"
 BASE_NAME_DB = "." + BASE_NAME_TEST_FOLDER + ".json"
