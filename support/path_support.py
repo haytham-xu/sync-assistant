@@ -50,8 +50,8 @@ def remove_path(path):
 def is_exist(file_folder_path):
     return os.path.exists(file_folder_path) 
 
-def is_exist(path):
-    return os.path.exists(path)
+# def is_exist(path):
+#     return os.path.exists(path)
 
 def is_folder(path):
     return os.path.isdir(path)
