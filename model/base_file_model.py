@@ -10,15 +10,16 @@ KEY_ENCRYPT_MIDDLE_PATH= 'encrypt_middle_path'
 KEY_ENCRYPT = 'encrypt'
 KEY_MTIME = 'mtime'
 
+
 class BaseFileModel:
 
-    __folder_context:context_model.FolderContext
-    __code:str
-    __fs_id:str
-    __file_name:str
-    __middle_path:str
-    __encrypt:bool
-    __mtime:str
+    __folder_context: context_model.FolderContext
+    __code: str
+    __fs_id: str
+    __file_name: str
+    __middle_path: str
+    __encrypt: bool
+    __mtime: str
     
     def __init__(self, folder_context:context_model.FolderContext, code:str, fs_id:str, file_name:str, middle_path:str, encrypt:bool, mtime:str):
         self.__folder_context = folder_context

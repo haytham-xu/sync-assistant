@@ -28,9 +28,12 @@ def sync_push(folder_context:context_model.FolderContext, encrypt:bool, latest_i
     swap_db.load_from_cloud_db_file(context_model.get_swap_db_path(folder_context))
     local_db.update_from_latest_index(latest_index)
 
-    should_create_in_cloud:dict = repository_utils.get_file_dict_difference_from_cloud_repository(local_db, swap_db)
-    should_update_in_cloud:dict = repository_utils.get_file_dict_intersation_and_mtime_difference_from_cloud_repository(local_db, swap_db)
-    should_delete_in_cloud:dict = repository_utils.get_file_dict_difference_from_local_repository(swap_db, local_db)
+    should_create_in_cloud: dict = repository_utils.get_file_dict_difference_from_cloud_repository(local_db, swap_db)
+    should_update_in_cloud: dict = repository_utils.get_file_dict_intersation_and_mtime_difference_from_cloud_repository(local_db, swap_db)
+    should_delete_in_cloud: dict = repository_utils.get_file_dict_difference_from_local_repository(swap_db, local_db)
+    # print(should_create_in_cloud)
+    # print(should_update_in_cloud)
+    # print(should_delete_in_cloud)
 
     handler_facade.handle_cloud_create(should_create_in_cloud, local_db, swap_db, upload_cloud_db_gap)
     handler_facade.handle_cloud_update(should_update_in_cloud, swap_db, upload_cloud_db_gap)

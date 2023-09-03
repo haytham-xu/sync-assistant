@@ -2,15 +2,8 @@
 /logs
 config-local.yaml
 __pycache__/
-venv
-uttest/testdata/
 local/
-test.py
 .vscode
-
-config-test.yaml
-uttest/to_delete
-uttest/tmp
-del/
-access_token.md
 temp.py
+/venv/
+.idea

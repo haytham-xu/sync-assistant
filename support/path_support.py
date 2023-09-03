@@ -4,24 +4,35 @@ from support import file_support
 import os
 import shutil
 
+def get_path_components(a_path:str):
+    normalized_path = os.path.normpath(a_path)
+    return normalized_path.split(os.sep)
+
+def convert_to_unix_path(a_path:str):
+    normalized_path = os.path.normpath(a_path)
+    components = normalized_path.split(os.sep)
+    return "/".join(components)
 def get_file_folder_name(file_folder_path:str):
-    return os.path.split(file_folder_path)[-1]
+    return os.path.split(file_folder_path)[1]
+
+def get_parent_path(file_folder_path:str):
+    return os.path.split(file_folder_path)[0]
 
 def copy_file_folder(source_path, target_path):
     shutil.copytree(source_path, target_path)
 
 def move_file_folder(source_path, target_path):
-    parent_path = '/'.join(target_path.split('/')[:-1])
+    parent_path = os.path.split(source_path)[0]
     create_folder(parent_path)
     shutil.move(source_path, target_path)
 
 def create_override_file(file_path:str, file_content):
-    parent_path = '/'.join(file_path.split('/')[:-1])
+    parent_path = os.path.split(file_path)[0]
     create_folder(parent_path)
     file_support.write_file(file_path, file_content)
 
 def create_file_byte(file_path:str, file_content):
-    parent_path = '/'.join(file_path.split('/')[:-1])
+    parent_path = os.path.split(file_path)[0]
     create_folder(parent_path)
     file_support.write_file_byte(file_path, file_content)
 
@@ -48,9 +59,9 @@ def is_folder(path):
 def list_folder(path:str):
     folder_list = []
     for file_or_folder in os.listdir(path):
-        file_or_folder_path = path + file_or_folder
+        file_or_folder_path = merge_path([path, file_or_folder])
         if is_folder(file_or_folder_path):
-            folder_list.append(file_or_folder_path + '/')
+            folder_list.append(file_or_folder_path)
     return folder_list
 
 ignore_file_folder_list = ['.DS_Store']
@@ -60,7 +71,7 @@ def list_file(path:str):
     for file_or_folder in os.listdir(path):
         if file_or_folder in ignore_file_folder_list:
             continue
-        file_or_folder_path = path  + file_or_folder
+        file_or_folder_path = merge_path([path, file_or_folder])
         if not is_folder(file_or_folder_path):
             file_list.append(file_or_folder_path)
     return file_list
@@ -73,22 +84,11 @@ def list_folder_file(path:str):
 def get_mtime(path):
     return int(os.stat(path).st_mtime)
 
-
-def format_folder_path(path:str):
-    if path[-1] != '/':
-        path += '/'
-    return path
-
 def merge_path(path_list:list):
     output_path = ""
     for p in path_list:
         output_path = os.path.join(output_path, p)
     return output_path
-
-def format_middle_path(middle_path:str):
-    if middle_path.startswith("/"):
-        return middle_path[1:]
-    return middle_path
 
 def list_folders_files(path):
     return [fof for fof in os.listdir(path) if fof not in ignore_file_folder_list]

@@ -7,7 +7,7 @@ from support import path_support
 from support.config_support import config
 
 # base
-BASE_PATH_LOCAL_ROOT = "./uttest/sync_uttest/tmp/"
+BASE_PATH_LOCAL_ROOT = path_support.merge_path([".", "uttest", "sync_uttest", "tmp"])# "./uttest/sync_uttest/tmp/"
 BASE_PATH_CLOUD_ROOT = config.get_cloud_root_path()
 BASE_NAME_TEST_FOLDER = "test_folder"
 BASE_NAME_DB = "." + BASE_NAME_TEST_FOLDER + ".json"
@@ -37,10 +37,11 @@ TD_MIDDLE_SAME = "same.md"
 TD_MIDDLE_DELETE = "to_delete.md"
 TD_MIDDLE_CREATE = "to_create.md"
 TD_MIDDLE_UPDATE = "to_update.md"
-TD_MIDDLE_SAME_2 = "same_folder/same.md"
+TD_MIDDLE_SAME_2 = path_support.merge_path(["same_folder", "same.md"]) #"same_folder/same.md"
 
-def get_encrypt_path(source_path:str):
-    return '/'.join([encrypter_support.string_source_to_base64_string(p) for p in source_path.split('/')])
+def get_encrypt_path(source_path: str):
+    return path_support.merge_path([encrypter_support.string_source_to_base64_string(p) for p in path_support.get_path_components(source_path)])
+
 
 TD_MIDDLE_SAME_ENCRYPT = get_encrypt_path(TD_MIDDLE_SAME)
 TD_MIDDLE_DELETE_ENCRYPT = get_encrypt_path(TD_MIDDLE_DELETE)

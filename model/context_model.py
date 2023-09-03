@@ -10,9 +10,12 @@ class FolderContext:
     __cloud_base_path:str
     __swap_base_path:str
     def __init__(self, local_base_path, cloud_base_path, swap_base_path):
-        self.__local_base_path = path_support.format_folder_path(local_base_path)
-        self.__cloud_base_path = path_support.format_folder_path(cloud_base_path)
-        self.__swap_base_path = path_support.format_folder_path(swap_base_path)
+        # self.__local_base_path = path_support.format_folder_path(local_base_path)
+        # self.__cloud_base_path = path_support.format_folder_path(cloud_base_path)
+        # self.__swap_base_path = path_support.format_folder_path(swap_base_path)
+        self.__local_base_path = local_base_path
+        self.__cloud_base_path = cloud_base_path
+        self.__swap_base_path = swap_base_path
     def get_local_base_path(self):
         return self.__local_base_path
     def get_cloud_base_path(self):
@@ -34,12 +37,12 @@ class FolderContext:
 
 def get_local_db_name(the_folder_context: FolderContext):
     local_base_path = the_folder_context.get_local_base_path()
-    folder_name = local_base_path.split('/')[-2]
+    folder_name = path_support.get_file_folder_name(local_base_path)
     return '.' + folder_name + '.json'
 
 def get_cloud_db_name(the_folder_context: FolderContext):
     cloud_base_path = the_folder_context.get_cloud_base_path()
-    folder_name = cloud_base_path.split('/')[-2]
+    folder_name = path_support.get_file_folder_name(cloud_base_path)
     return '.' + folder_name + '.json'
 
 

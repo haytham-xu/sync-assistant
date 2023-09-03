@@ -22,7 +22,7 @@ def get_duplicate_result(source_folder_path:str, source_rebuild_index:bool, targ
     for k in to_move_folder_code_set:
         source_file_path:str = target_folder_dict[k]
         middle_path = source_file_path.removeprefix(target_folder_path)
-        target_file_path:str = source_folder_path + middle_path
+        target_file_path:str = path_support.merge_path([source_folder_path, middle_path])
         print("move {} to {}".format(source_file_path, target_file_path))
     # shutil.
     
@@ -44,7 +44,7 @@ def remove_deplicate_file(source_folder_path:str, target_folder_path:str, rebuil
     for k in to_move_folder_code_set:
         source_file_path:str = target_folder_dict[k]
         middle_path = source_file_path.removeprefix(target_folder_path)
-        target_file_path:str = source_folder_path + middle_path
+        target_file_path:str = path_support.merge_path([source_folder_path, middle_path])
         print("move {} to {}".format(source_file_path, target_file_path))
         path_support.move_file_folder(source_file_path, target_file_path)
 

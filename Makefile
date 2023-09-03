@@ -8,5 +8,6 @@ freeze:
 install:
 	pip3 install -r requirements.txt
 
+# python -m venv venv --c clear
 # source ./venv/bin/activate
-# deactive
+# deactive 

@@ -7,7 +7,7 @@ from support import path_support
 class CloudFileModel(base_file_model.BaseFileModel):        
     def get_local_file_path(self):
         if self.get_encrypt():
-            unencrypted_middle_path = '/'.join([encrypter_support.string_base64_to_source_string(p) for p in self.get_middle_path().split('/')])
+            unencrypted_middle_path = path_support.merge_path([encrypter_support.string_base64_to_source_string(p) for p in path_support.get_path_components(self.get_middle_path())])
             return path_support.merge_path([self.get_folder_context().get_local_base_path(), unencrypted_middle_path])
         return path_support.merge_path([self.get_folder_context().get_local_base_path(), self.get_middle_path()])
 

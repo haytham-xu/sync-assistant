@@ -15,7 +15,8 @@ def get_latest_index(base_path:str, encrypt: bool):
             if file_name[0] == '.':
                 continue
             file_path = path_support.merge_path([cur_path, file_name])
-            middle_path = path_support.format_middle_path(file_path.removeprefix(base_path))
+            # middle_path = path_support.format_middle_path(file_path.removeprefix(base_path))
+            middle_path = file_path.removeprefix(base_path)
             file_list.append({
                 base_file_model.KEY_CODE: encrypter_support.string_hash(middle_path),
                 base_file_model.KEY_MIDDLE_PATH: middle_path,

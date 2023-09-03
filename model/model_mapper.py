@@ -2,13 +2,14 @@
 from model import local_file_model
 from model import cloud_file_model
 from support import encrypter_support
+from support import path_support
 
 def map_to_local_file_model(a_cloud_file_model: cloud_file_model.CloudFileModel):
     file_name = ""
     middle_path = ""
     if a_cloud_file_model.get_encrypt():
         file_name = encrypter_support.string_base64_to_source_string(a_cloud_file_model.get_file_name())
-        middle_path = '/'.join([encrypter_support.string_base64_to_source_string(p) for p in a_cloud_file_model.get_middle_path().split('/')])
+        middle_path = path_support.merge_path([encrypter_support.string_base64_to_source_string(p) for p in path_support.get_path_components(a_cloud_file_model.get_middle_path())])
     else:
         file_name = a_cloud_file_model.get_file_name()
         middle_path = a_cloud_file_model.get_middle_path()
@@ -19,7 +20,7 @@ def map_to_cloud_file_model(a_local_file_model: local_file_model.LocalFileModel)
     middle_path = ""
     if a_local_file_model.get_encrypt():
         file_name = encrypter_support.string_source_to_base64_string(a_local_file_model.get_file_name())
-        middle_path = '/'.join([encrypter_support.string_source_to_base64_string(p) for p in a_local_file_model.get_middle_path().split('/')])
+        middle_path = path_support.merge_path([encrypter_support.string_source_to_base64_string(p) for p in path_support.get_path_components(a_local_file_model.get_middle_path())])
     else:
         file_name = a_local_file_model.get_file_name()
         middle_path = a_local_file_model.get_middle_path()

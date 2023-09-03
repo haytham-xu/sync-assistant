@@ -1,6 +1,7 @@
 
 from support import config_support
 from support import file_support
+from support import path_support
 import requests
 import json
 import os
@@ -190,8 +191,9 @@ def download_file_with_path(local_base_path:str, cloud_base_path:str, middle_pat
     download_file(dlink, local_base_path + middle_path)
 
 def is_file_exist_in_cloud(cloud_file_path:str):
-    search_key = cloud_file_path.split('/')[-1]
-    search_in = "/".join(cloud_file_path.split('/')[:-1])
+    search_key = path_support.get_file_folder_name(cloud_file_path)
+    parent_path = path_support.get_parent_path(cloud_file_path)
+    search_in = path_support.convert_to_unix_path(parent_path)
     res = search_file(search_key, search_in)
     return len(res['list']) != 0
 
